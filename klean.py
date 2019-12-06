@@ -1,4 +1,7 @@
-import glob, os
-os.chdir("/mydir")
+import glob
+import os
+
+
+os.chdir("DelTest")
 for file in glob.glob("*.txt"):
     print(file)
