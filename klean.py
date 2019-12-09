@@ -1,18 +1,28 @@
 import os
 import json
+from datetime import datetime
 
 # 1. referentiedatum halen uit de filenames van de back-ups
 """
     alle files hebben een datum in de naam, dit word de referentiedatum. er vinden 168 back-ups per week plaats.
 """
 
-# os.listdir(path)[0] - selecteert het eerste bestand uit de path
 config = open("config.json")
 c = json.load(config)
+ref_date = os.listdir(c['path'])[0]
 
-first_file = os.listdir(c['path'])[0]
 
-print(first_file.split('+')[1].replace("%3A", ":").replace(";", " "))
+def parse_date(filename):
+    '''
+        gets the date from a file name
+    '''
+    date_parse = datetime.strptime(filename.split('+')[1].replace("%3A", ":").replace(";", " "), "%Y-%m-%d %H:%M:%S")
+    return date_parse
+
+
+for file in os.listdir(c['path']):
+    print(file)
+    print(parse_date(file))
 
 # 2. het verwijderen vanaf die datum voor de tweede week
 """
