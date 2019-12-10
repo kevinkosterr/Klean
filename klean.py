@@ -5,11 +5,11 @@ d = {}
 
 # sorteert de files en zet ze in een dictionary
 for file in sorted(os.listdir("files")):
-    naam = file.split('+')[0]
+    key_name = file.split('+')[0]
     # als de naam niet in de dictionary voorkomt, maak dan een sleutel en geef 'm een lege lijst
-    if naam not in d:
-        d[naam] = []
-    d[naam].append(file)
+    if key_name not in d:
+        d[key_name] = []
+    d[key_name].append(file)
 # os.listdir is hier al gesorteerd
 
 
