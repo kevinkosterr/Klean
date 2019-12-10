@@ -1,26 +1,20 @@
 import os
 from datetime import datetime
 
-# Pseudo Code
-'''
-    Doorzoek de directory naar files.
-        Maak een lijst met alle databases daarin.
-            Sorteer de files. (SET)
-                Pak de laatste file.
-                    Haal de datum uit de string(filename).
-'''
+d = {}
 
+for file in sorted(os.listdir("files")):
+    naam = file.split('+')[0]
+    if naam not in d:
+        d[naam] = []
+    d[naam].append(file)
 
-# Doorzoek de directory naar files.
-def dir_scan():
-    for file in os.listdir("files"):
-        iwannadie
 
 # Haal de datum uit de string(filename).
 def parse_date(filename):
+    """
+        haalt de datum uit de filename
+    """
     date_parse = {filename: datetime.strptime(filename.split('+')[1].replace("%3A", ":").replace(";", " "), "%Y-%m-%d "
                                                                                                             "%H:%M:%S")}
     return date_parse
-
-
-dir_scan()
