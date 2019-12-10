@@ -3,21 +3,19 @@ from datetime import datetime
 
 # Bepaal de referentiedatum
 '''
-    Pak de files
+    Doorzoek de directory voor files.
         Sorteer de files.
             Pak de laatste file.
                 Haal de datum uit de string(filename).
 '''
 
-
+# Haal de datum uit de string(filename).
 def parse_date(filename):
-    """
-        haalt de datum uit een string
-    """
     date_parse = {filename: datetime.strptime(filename.split('+')[1].replace("%3A", ":").replace(";", " "), "%Y-%m-%d "
                                                                                                             "%H:%M:%S")}
     return date_parse
 
 
+# Doorzoekt de directory voor files.
 for file in os.listdir("files"):
     print(parse_date(file))
