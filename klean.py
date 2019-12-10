@@ -14,14 +14,14 @@ ref_date = os.listdir(c['path'])[0]
 
 def parse_date(filename):
     '''
-        gets the date from a file name
+        gets the date from a string
     '''
     date_parse = datetime.strptime(filename.split('+')[1].replace("%3A", ":").replace(";", " "), "%Y-%m-%d %H:%M:%S")
     return date_parse
 
 
-for file in os.listdir(c['path']):
-    print(file)
+for file in os.listdir("files"):
+    print(file, end=' - ')
     print(parse_date(file))
 
 # 2. het verwijderen vanaf die datum voor de tweede week
