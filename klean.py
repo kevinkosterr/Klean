@@ -4,8 +4,8 @@ from datetime import datetime
 # Bepaal de referentiedatum
 '''
     Sorteer de files.
-        Haal de datum uit de string.
-            Pak de laatste datum van de gesorteerde files, dit wordt je referentie datum.
+        Pak de laatste file.
+            Haal de datum uit de string(filename).
 '''
 
 def parse_date(filename):
