@@ -3,9 +3,10 @@ from datetime import datetime
 
 # Bepaal de referentiedatum
 '''
-    Sorteer de files.
-        Pak de laatste file.
-            Haal de datum uit de string(filename).
+    Pak de files
+        Sorteer de files.
+            Pak de laatste file.
+                Haal de datum uit de string(filename).
 '''
 
 
