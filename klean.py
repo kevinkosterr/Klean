@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime
 
@@ -24,6 +25,6 @@ def parse_date(filename):
 
 # haalt de values uit de dictionary en parsed de date uit de namen
 for db_name in d:
-    for f_name in d.keys():
+    for f_name in d.values():
     #     values_string = str(f_name).split("+")[1].replace(';', '').replace('%3A', ':').split("]")[1]
     # print(parse_date(values_string))
