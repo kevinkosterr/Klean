@@ -24,7 +24,9 @@ def parse_date(filename):
 
 
 # haalt de values uit de dictionary en parsed de date uit de namen
+# zoekt in de dictionary naar elke databasename
 for db_name in d:
-    for f_name in d.values():
-    #     values_string = str(f_name).split("+")[1].replace(';', '').replace('%3A', ':').split("]")[1]
-    # print(parse_date(values_string))
+    # zoekt elke value in de keys
+    for values in d[db_name]:
+        values = str(values).split("+")[1]
+        parsed_values = parse_date(values.replace(";", '').replace('%3A', ':'))
