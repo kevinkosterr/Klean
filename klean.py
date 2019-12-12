@@ -28,9 +28,11 @@ def parse_date(filename):
 
 
 def process_bucket(startpoint, list_to_compare, hours):
-    startpoint_diff = parse_date(startpoint[-1]) - parse_date(list_to_compare)
-    if startpoint_diff < timedelta(hours=hours):
-        kill_list.append(list_to_compare)
+    for item in list_to_compare:
+        diff_start = parse_date(startpoint) - parse_date(item)
+        if diff_start < timedelta(hours=hours):
+            kill_list.append(item)
+    kill_list.pop()
 
 
 for db_name in d.keys():
@@ -53,6 +55,7 @@ for db_name in d.keys():
         elif diff >= timedelta(days=85):
             bucket5.append(cursor)
 
+    process_bucket(bucket1[-1], bucket2, 4.5)
 
 # haalt de values uit de dictionary en parsed de date uit de namen
 # zoekt in de dictionary naar elke databasename
