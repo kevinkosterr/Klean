@@ -3,6 +3,7 @@ import os
 from datetime import datetime, timedelta
 
 d = {}
+kill_list = []
 
 # sorteert de files en zet ze in een dictionary
 for file in sorted(os.listdir("files"), reverse=True):
@@ -26,6 +27,12 @@ def parse_date(filename):
     return parsed_file
 
 
+def process_bucket(startpoint, list_to_compare, hours):
+    startpoint_diff = parse_date(startpoint[-1]) - parse_date(list_to_compare)
+    if startpoint_diff < timedelta(hours=hours):
+        kill_list.append(list_to_compare)
+
+
 for db_name in d.keys():
     bucket1 = []  # week 1
     bucket2 = []  # week 2
@@ -35,16 +42,17 @@ for db_name in d.keys():
     a = d[db_name][0]
     for cursor in d[db_name]:
         diff = parse_date(a) - parse_date(cursor)
-        if diff < timedelta(days=7):
+        if diff <= timedelta(days=7):
             bucket1.append(cursor)
-        elif diff < timedelta(days=14):
+        elif diff < timedelta(days=15):
             bucket2.append(cursor)
-        elif diff < timedelta(days=28):
+        elif diff < timedelta(days=29):
             bucket3.append(cursor)
-        elif diff < timedelta(days=84):
+        elif diff < timedelta(days=85):
             bucket4.append(cursor)
-        else:
+        elif diff >= timedelta(days=85):
             bucket5.append(cursor)
+
 
 # haalt de values uit de dictionary en parsed de date uit de namen
 # zoekt in de dictionary naar elke databasename
