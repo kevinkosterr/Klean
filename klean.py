@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 d = {}
 
@@ -19,16 +19,38 @@ def parse_date(filename):
     """
         haalt de datum uit de filename
     """
-    date_parse = datetime.strptime(filename, "%Y-%m-%d%" "H:%M:%S")
-    return date_parse
+    # file_parsed = datetime.strptime(filename, "%Y-%m-%d%" "H:%M:%S")
+    # return file_parsed
+    file_to_parse = str(filename).split("+")[1]
+    parsed_file = datetime.strptime(file_to_parse.replace(";", '').replace('%3A', ':'), "%Y-%m-%d%" "H:%M:%S")
+    return parsed_file
 
+
+for db_name in d.keys():
+    bucket1 = []  # week 1
+    bucket2 = []  # week 2
+    bucket3 = []  # week 3 t/m 4
+    bucket4 = []  # week 5 t/m 12
+    bucket5 = []  # alles na week 12
+    a = d[db_name][0]
+    for cursor in d[db_name]:
+        diff = parse_date(a) - parse_date(cursor)
+        if diff < timedelta(days=7):
+            bucket1.append(cursor)
+        elif diff < timedelta(days=14):
+            bucket2.append(cursor)
+        elif diff < timedelta(days=28):
+            bucket3.append(cursor)
+        elif diff < timedelta(days=84):
+            bucket4.append(cursor)
+        else:
+            bucket5.append(cursor)
 
 # haalt de values uit de dictionary en parsed de date uit de namen
 # zoekt in de dictionary naar elke databasename
-for db_name in d:
-    print(db_name)
-    # zoekt elke value in de keys
-    for values in d[db_name]:
-        values = str(values).split("+")[1]
-        parsed_values = parse_date(values.replace(";", '').replace('%3A', ':'))
-        print(parsed_values)
+# for db_name in d:
+#     # zoekt elke value in de keys
+#     for values in d[db_name]:
+#         values = str(values).split("+")[1]
+#         parsed_values = parse_date(values.replace(";", '').replace('%3A', ':'))
+#         print(parsed_values)
