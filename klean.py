@@ -6,12 +6,14 @@ d = {}
 
 # sorteert de files en zet ze in een dictionary
 # os.listdir("files")
-for file in sorted(open("filelist").read().split("\n"), reverse=True):
-    key_name = file.split('+')[0]
+for filename in sorted(open("filelist").read().split("\n"), reverse=True):
+    if '+' not in filename:
+        continue
+    key_name = filename.split('+')[0]
     # als de naam niet in de dictionary voorkomt, maak dan een sleutel en geef 'm een lege lijst
     if key_name not in d:
         d[key_name] = []
-    d[key_name].append(file)
+    d[key_name].append(filename)
 
 
 # os.listdir is hier al gesorteerd
@@ -24,8 +26,15 @@ def parse_date(filename):
     """
     # file_parsed = datetime.strptime(filename, "%Y-%m-%d%" "H:%M:%S")
     # return file_parsed
-    file_to_parse = str(filename).split("+")[1].split(".")[0]
-    parsed_file = datetime.strptime(str(file_to_parse).replace(";", '').replace('%3A', ':'), "%Y-%m-%d%" "H:%M:%S")
+    try:
+        file_to_parse = str(filename).split("+")[1].split(".")[0]
+        parsed_file = datetime.strptime(str(file_to_parse).replace(";", '').replace('%3A', ':'), "%Y-%m-%d%" "H:%M:%S")
+    except:
+        print(
+
+            'error with ', filename
+        )
+        raise
     return parsed_file
 
 
@@ -35,21 +44,28 @@ def process_bucket(start_point, list_to_compare, hours):
     er maximaal tussen elke back-up mag zitten.
     """
     kill_list = []
-    for item in list_to_compare:
-        diff_start = parse_date(start_point) - parse_date(item)
-        if diff_start < timedelta(hours=hours):
-            kill_list.append(item)
+    while len(list_to_compare) > 1:
+        for item in list_to_compare:
+            diff_start = parse_date(start_point) - parse_date(item)
+            if diff_start < timedelta(hours=hours):
+                kill_list.append(item)
+            else:
+                break
+        if not kill_list:
+            return []
+        last = kill_list.pop()
+        if last in list_to_compare:
+            start_point = last
+            list_to_compare = list_to_compare[list_to_compare.index(last) + 1:]
         else:
-            break
-    if not kill_list:
-        return []
-    last = kill_list.pop()
-    new_list = list_to_compare[list_to_compare.index(last):]
+            start_point = list_to_compare.pop(0)
+
     return kill_list
 
 
 kill_list = []
 for db_name in d.keys():
+    this_kill_list = []
     bucket1 = []  # week 1
     bucket2 = []  # week 2
     bucket3 = []  # week 3 t/m 4
@@ -69,16 +85,13 @@ for db_name in d.keys():
         elif diff >= timedelta(days=85):
             bucket5.append(cursor)
 
-    kill_list.extend(process_bucket(bucket1[-1], bucket2, 4.5))
-    kill_list.extend(process_bucket(bucket2[-1], bucket3, 12.5))
-    kill_list.extend(process_bucket(bucket3[-1], bucket4, 24))
-    kill_list.extend(process_bucket(bucket4[-1], bucket5, 168))
-
-# haalt de values uit de dictionary en parsed de date uit de namen
-# zoekt in de dictionary naar elke databasename
-# for db_name in d:
-#     # zoekt elke value in de keys
-#     for values in d[db_name]:
-#         values = str(values).split("+")[1]
-#         parsed_values = parse_date(values.replace(";", '').replace('%3A', ':'))
-#         print(parsed_values)
+    this_kill_list.extend(process_bucket(bucket1[-1], bucket2, 4.5))
+    this_kill_list.extend(process_bucket(bucket2[-1], bucket3, 12.5))
+    this_kill_list.extend(process_bucket(bucket3[-1], bucket4, 24.5))
+    this_kill_list.extend(process_bucket(bucket4[-1], bucket5, 168.5))
+    print(db_name, 'gevonden files', len(d[db_name]), '# kill list: ',len(this_kill_list))
+    kill_list.extend(this_kill_list)
+    keep_list = [_ for _ in d[db_name] if _ not in kill_list]
+    for idx, filename in enumerate(keep_list[:-1]):
+        print(idx,parse_date(filename)-parse_date(keep_list[idx+1]), filename )
+    # print(kill_list)
