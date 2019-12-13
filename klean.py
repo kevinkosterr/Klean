@@ -3,6 +3,12 @@ import json
 import os
 from datetime import datetime, timedelta
 
+control = input("Would you like to run this program? (y/n): ")
+if control == "y":
+    pass
+else:
+    exit()
+
 d = {}
 
 # sorteert de files en zet ze in een dictionary
