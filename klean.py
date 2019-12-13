@@ -3,7 +3,6 @@ import os
 from datetime import datetime, timedelta
 
 d = {}
-kill_list = []
 
 # sorteert de files en zet ze in een dictionary
 for file in sorted(os.listdir("files"), reverse=True):
@@ -12,13 +11,15 @@ for file in sorted(os.listdir("files"), reverse=True):
     if key_name not in d:
         d[key_name] = []
     d[key_name].append(file)
+
+
 # os.listdir is hier al gesorteerd
 
 
 # haal de datum uit de string(filename).
 def parse_date(filename):
     """
-        haalt de datum uit de filename
+    haalt de datum uit de filename
     """
     # file_parsed = datetime.strptime(filename, "%Y-%m-%d%" "H:%M:%S")
     # return file_parsed
@@ -27,12 +28,23 @@ def parse_date(filename):
     return parsed_file
 
 
-def process_bucket(startpoint, list_to_compare, hours):
+# de lijst waarin alle files komen te staan die verwijderd moeten worden
+kill_list = []
+
+
+def process_bucket(start_point, list_to_compare, hours):
+    """
+    rekent het verschil tussen het startpunt en het volgende item, paramater hours geeft aan hoeveel uren
+    er maximaal tussen elke back-up mag zitten.
+    """
     for item in list_to_compare:
-        diff_start = parse_date(startpoint) - parse_date(item)
+        diff_start = parse_date(start_point) - parse_date(item)
         if diff_start < timedelta(hours=hours):
             kill_list.append(item)
-    kill_list.pop()
+        else:
+            break
+    last = kill_list.pop()
+    new_list = list_to_compare[list_to_compare.index(last):]
 
 
 for db_name in d.keys():
