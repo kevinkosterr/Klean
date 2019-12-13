@@ -1,3 +1,4 @@
+import filecmp
 import json
 import os
 from datetime import datetime, timedelta
@@ -6,7 +7,7 @@ d = {}
 
 # sorteert de files en zet ze in een dictionary
 # os.listdir("files")
-for filename in sorted(open("filelist").read().split("\n"), reverse=True):
+for filename in sorted(open("filelist2").read().split("\n"), reverse=True):
     if '+' not in filename:
         continue
     key_name = filename.split('+')[0]
@@ -30,10 +31,7 @@ def parse_date(filename):
         file_to_parse = str(filename).split("+")[1].split(".")[0]
         parsed_file = datetime.strptime(str(file_to_parse).replace(";", '').replace('%3A', ':'), "%Y-%m-%d%" "H:%M:%S")
     except:
-        print(
-
-            'error with ', filename
-        )
+        print('error with ', filename)
         raise
     return parsed_file
 
@@ -89,9 +87,12 @@ for db_name in d.keys():
     this_kill_list.extend(process_bucket(bucket2[-1], bucket3, 12.5))
     this_kill_list.extend(process_bucket(bucket3[-1], bucket4, 24.5))
     this_kill_list.extend(process_bucket(bucket4[-1], bucket5, 168.5))
-    print(db_name, 'gevonden files', len(d[db_name]), '# kill list: ',len(this_kill_list))
     kill_list.extend(this_kill_list)
+    print(db_name, 'gevonden files', len(d[db_name]), '# kill list:', len(this_kill_list))
     keep_list = [_ for _ in d[db_name] if _ not in kill_list]
-    for idx, filename in enumerate(keep_list[:-1]):
-        print(idx,parse_date(filename)-parse_date(keep_list[idx+1]), filename )
-    # print(kill_list)
+    with open("filelist3", "a") as f:
+        for item in keep_list:
+            f.write(f"{item}\n")
+print("All files have been transferred")
+# for idx, filename in enumerate(keep_list[:-1]):
+#     print(idx, parse_date(filename) - parse_date(keep_list[idx + 1]), filename)
