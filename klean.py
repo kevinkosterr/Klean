@@ -1,5 +1,4 @@
-import filecmp
-import json
+import toml
 import os
 from datetime import datetime, timedelta
 
@@ -11,25 +10,26 @@ else:
 
 d = {}
 
-# sorteert de files en zet ze in een dictionary
 # os.listdir("files")
+# sorts the files and puts them in a dictionary
 for filename in sorted(open("filelist2").read().split("\n"), reverse=True):
     if '+' not in filename:
         continue
     key_name = filename.split('+')[0]
-    # als de naam niet in de dictionary voorkomt, maak dan een sleutel en geef 'm een lege lijst
+    # if the name is not in the dictionary, create a key with an empty list as value
     if key_name not in d:
         d[key_name] = []
     d[key_name].append(filename)
+# the filenames have already been sorted from here.
 
 
-# os.listdir is hier al gesorteerd
-
-
-# haal de datum uit de string(filename).
 def parse_date(filename):
     """
-    haalt de datum uit de filename
+    EN:
+    gets the datetime object out of the filename
+
+    NL:
+    haalt het datetime object uit de filename
     """
     # file_parsed = datetime.strptime(filename, "%Y-%m-%d%" "H:%M:%S")
     # return file_parsed
@@ -44,6 +44,11 @@ def parse_date(filename):
 
 def process_bucket(start_point, list_to_compare, hours):
     """
+    EN:
+    calculates the difference between the starting point and the next item, where the next item is first in the next
+    list. paramater 'hours' defines how big the gap between the back-ups is allowed to be.
+
+    NL:
     rekent het verschil tussen het startpunt en het volgende item, paramater hours geeft aan hoeveel uren
     er maximaal tussen elke back-up mag zitten.
     """
@@ -70,22 +75,27 @@ def process_bucket(start_point, list_to_compare, hours):
 kill_list = []
 for db_name in d.keys():
     this_kill_list = []
-    bucket1 = []  # week 1
-    bucket2 = []  # week 2
-    bucket3 = []  # week 3 t/m 4
-    bucket4 = []  # week 5 t/m 12
-    bucket5 = []  # alles na week 12
+    bucket1 = []
+    bucket2 = []
+    bucket3 = []
+    bucket4 = []
+    bucket5 = []
     a = d[db_name][0]
     for cursor in d[db_name]:
         diff = parse_date(a) - parse_date(cursor)
+        # first bucket, period in days is defined in config file. standard is 7
         if diff <= timedelta(days=7):
             bucket1.append(cursor)
+        # second bucket, period in days is defined in config file. standard is 15
         elif diff < timedelta(days=15):
             bucket2.append(cursor)
+        # third bucket, period in days is defined in config file. standard is 29
         elif diff < timedelta(days=29):
             bucket3.append(cursor)
+        # fourth bucket, period in days is defined in config file. standard is 85
         elif diff < timedelta(days=85):
             bucket4.append(cursor)
+        # fifth bucket, period in days is defined in config file. standard is 85
         elif diff >= timedelta(days=85):
             bucket5.append(cursor)
 
