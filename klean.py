@@ -12,7 +12,7 @@ d = {}
 
 # os.listdir("files")
 # sorts the files and puts them in a dictionary
-for filename in sorted(open("filelist2").read().split("\n"), reverse=True):
+for filename in sorted(open("filelist").read().split("\n"), reverse=True):
     if '+' not in filename:
         continue
     key_name = filename.split('+')[0]
@@ -106,7 +106,7 @@ for db_name in d.keys():
     kill_list.extend(this_kill_list)
     print(db_name, 'gevonden files', len(d[db_name]), '# kill list:', len(this_kill_list))
     keep_list = [_ for _ in d[db_name] if _ not in kill_list]
-    with open("filelist3", "a") as f:
+    with open("filelist2", "a") as f:
         for item in keep_list:
             f.write(f"{item}\n")
 print("All files have been transferred")

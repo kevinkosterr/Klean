@@ -1,5 +1,9 @@
 # 0.5 addition to hours_between_backups is for safety purposes, so the script doesn't accidentally delete wrong files.
 
+[main]
+directory = "" # please enter the full path
+prefix = "+"
+
 [bucket.first]
 #hours_between_backups=
 period_in_days= 7
