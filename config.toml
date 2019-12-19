@@ -9,17 +9,17 @@ prefix = "+"
 period_in_days= 7
 
 [bucket_second]
-hours_between_backups= 4.5
+hours_between= 4.5
 period_in_days= 14
 
 [bucket_third]
-hours_between_backups= 12.5
+hours_between= 12.5
 period_in_days= 28
 
 [bucket_fourth]
-hours_between_backups= 24.5
+hours_between= 24.5
 period_in_days= 84
 
 [bucket_fifth]
-hours_between_backups= 168.5
+hours_between= 168.5
 period_in_days= 84
