@@ -2,17 +2,22 @@ import toml
 import os
 from datetime import datetime, timedelta
 
-control = input("Would you like to run this program? (y/n): ")
-if control == "y":
-    pass
-else:
-    exit()
+config = toml.load('config.toml')
+
+
+# control = input("Would you like to run this program? (y/n): ")
+# if control == "y":
+#     pass
+# else:
+#     exit()
+
 
 d = {}
 
 # os.listdir("files")
+# open("filelist").read().split("\n")
 # sorts the files and puts them in a dictionary
-for filename in sorted(open("filelist").read().split("\n"), reverse=True):
+for filename in sorted(os.listdir(config.get('main').get('directory')), reverse=True):
     if '+' not in filename:
         continue
     key_name = filename.split('+')[0]
@@ -84,19 +89,19 @@ for db_name in d.keys():
     for cursor in d[db_name]:
         diff = parse_date(a) - parse_date(cursor)
         # first bucket, period in days is defined in config file. standard is 7
-        if diff <= timedelta(days=7):
+        if diff <= timedelta(days=config.get('bucket_first').get('period_in_days')):
             bucket1.append(cursor)
         # second bucket, period in days is defined in config file. standard is 15
-        elif diff < timedelta(days=15):
+        elif diff < timedelta(days=config.get('bucket_second').get('period_in_days')):
             bucket2.append(cursor)
         # third bucket, period in days is defined in config file. standard is 29
-        elif diff < timedelta(days=29):
+        elif diff < timedelta(days=config.get('bucket_third').get('period_in_days')):
             bucket3.append(cursor)
         # fourth bucket, period in days is defined in config file. standard is 85
-        elif diff < timedelta(days=85):
+        elif diff < timedelta(days=config.get('bucket_fourth').get('period_in_days')):
             bucket4.append(cursor)
         # fifth bucket, period in days is defined in config file. standard is 85
-        elif diff >= timedelta(days=85):
+        elif diff >= timedelta(days=config.get('bucket_fifth').get('period_in_days')):
             bucket5.append(cursor)
 
     this_kill_list.extend(process_bucket(bucket1[-1], bucket2, 4.5))
@@ -105,10 +110,7 @@ for db_name in d.keys():
     this_kill_list.extend(process_bucket(bucket4[-1], bucket5, 168.5))
     kill_list.extend(this_kill_list)
     print(db_name, 'gevonden files', len(d[db_name]), '# kill list:', len(this_kill_list))
-    keep_list = [_ for _ in d[db_name] if _ not in kill_list]
-    with open("filelist2", "a") as f:
-        for item in keep_list:
-            f.write(f"{item}\n")
-print("All files have been transferred")
+    # keep_list = [_ for _ in d[db_name] if _ not in kill_list]
+    # print(keep_list)
 # for idx, filename in enumerate(keep_list[:-1]):
 #     print(idx, parse_date(filename) - parse_date(keep_list[idx + 1]), filename)

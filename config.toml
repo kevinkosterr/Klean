@@ -1,25 +1,25 @@
 # 0.5 addition to hours_between_backups is for safety purposes, so the script doesn't accidentally delete wrong files.
 
 [main]
-directory = "" # please enter the full path
+directory = "files" # please enter the full path
 prefix = "+"
 
-[bucket.first]
+[bucket_first]
 #hours_between_backups=
 period_in_days= 7
 
-[bucket.second]
+[bucket_second]
 hours_between_backups= 4.5
 period_in_days= 14
 
-[bucket.third]
+[bucket_third]
 hours_between_backups= 12.5
 period_in_days= 28
 
-[bucket.fourth]
+[bucket_fourth]
 hours_between_backups= 24.5
 period_in_days= 84
 
-[bucket.fifth]
+[bucket_fifth]
 hours_between_backups= 168.5
 period_in_days= 84
