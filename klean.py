@@ -1,14 +1,10 @@
+import glob
+
 import toml
 import os
 from datetime import datetime, timedelta
 
 config = toml.load('config.toml')
-
-# control = input("Would you like to run this program? (y/n): ")
-# if control == "y":
-#     pass
-# else:
-#     exit()
 
 
 d = {}
@@ -109,8 +105,32 @@ for db_name in d.keys():
     this_kill_list.extend(process_bucket(bucket3[-1], bucket4, config.get('bucket_fourth').get('hours_between')))
     this_kill_list.extend(process_bucket(bucket4[-1], bucket5, config.get('bucket_fifth').get('hours_between')))
     kill_list.extend(this_kill_list)
-    print(db_name, 'gevonden files', len(d[db_name]), '# kill list:', len(this_kill_list))
-    # keep_list = [_ for _ in d[db_name] if _ not in kill_list]
-    # print(keep_list)
+    print(db_name, 'files found', len(d[db_name]), '# kill list:', len(this_kill_list))
+
+file_size = os.path.getsize(config.get('main').get('directory'))
+
+# for size in kill_list:
+#     s = os.stat(size)
+#     sizes = []
+#     sizes.extend(s)
+# del_size = sum(s)
+
+print('-------------------------------------------')
+print('total file size:', float(file_size*0.000001), 'MB')
+print('amount of files that will be deleted:', len(kill_list))
+# print('total file size of files to delete:', int(del_size*0.000001), 'MB')
+
+control = input("Would you like to delete these files? (y/n): ")
+if control == "y":
+    pass
+else:
+    exit()
+
+for filename in glob.glob(config.get('main').get('directory')):
+    os.remove(filename)
+
+
+# keep_list = [_ for _ in d[db_name] if _ not in kill_list]
+# # print(keep_list)
 # for idx, filename in enumerate(keep_list[:-1]):
 #     print(idx, parse_date(filename) - parse_date(keep_list[idx + 1]), filename)
