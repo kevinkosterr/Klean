@@ -110,6 +110,7 @@ for db_name in d.keys():
     this_kill_list.extend(process_bucket(bucket4[-1], bucket5, 168.5))
     kill_list.extend(this_kill_list)
     print(db_name, 'gevonden files', len(d[db_name]), '# kill list:', len(this_kill_list))
+
     # keep_list = [_ for _ in d[db_name] if _ not in kill_list]
     # print(keep_list)
 # for idx, filename in enumerate(keep_list[:-1]):
