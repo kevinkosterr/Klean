@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 
 config = toml.load('config.toml')
 
-
 # control = input("Would you like to run this program? (y/n): ")
 # if control == "y":
 #     pass
@@ -15,7 +14,6 @@ config = toml.load('config.toml')
 d = {}
 
 # os.listdir("files")
-# open("filelist").read().split("\n")
 # sorts the files and puts them in a dictionary
 for filename in sorted(os.listdir(config.get('main').get('directory')), reverse=True):
     if '+' not in filename:
@@ -25,6 +23,8 @@ for filename in sorted(os.listdir(config.get('main').get('directory')), reverse=
     if key_name not in d:
         d[key_name] = []
     d[key_name].append(filename)
+
+
 # the filenames have already been sorted from here.
 
 
@@ -104,13 +104,12 @@ for db_name in d.keys():
         elif diff >= timedelta(days=config.get('bucket_fifth').get('period_in_days')):
             bucket5.append(cursor)
 
-    this_kill_list.extend(process_bucket(bucket1[-1], bucket2, 4.5))
-    this_kill_list.extend(process_bucket(bucket2[-1], bucket3, 12.5))
-    this_kill_list.extend(process_bucket(bucket3[-1], bucket4, 24.5))
-    this_kill_list.extend(process_bucket(bucket4[-1], bucket5, 168.5))
+    this_kill_list.extend(process_bucket(bucket1[-1], bucket2, config.get('bucket_second').get('hours_between')))
+    this_kill_list.extend(process_bucket(bucket2[-1], bucket3, config.get('bucket_third').get('hours_between')))
+    this_kill_list.extend(process_bucket(bucket3[-1], bucket4, config.get('bucket_fourth').get('hours_between')))
+    this_kill_list.extend(process_bucket(bucket4[-1], bucket5, config.get('bucket_fifth').get('hours_between')))
     kill_list.extend(this_kill_list)
     print(db_name, 'gevonden files', len(d[db_name]), '# kill list:', len(this_kill_list))
-
     # keep_list = [_ for _ in d[db_name] if _ not in kill_list]
     # print(keep_list)
 # for idx, filename in enumerate(keep_list[:-1]):
