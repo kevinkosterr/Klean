@@ -1,11 +1,8 @@
-import glob
-
 import toml
 import os
 from datetime import datetime, timedelta
 
 config = toml.load('config.toml')
-
 
 d = {}
 
@@ -109,14 +106,8 @@ for db_name in d.keys():
 
 file_size = os.path.getsize(config.get('main').get('directory'))
 
-# for size in kill_list:
-#     s = os.stat(size)
-#     sizes = []
-#     sizes.extend(s)
-# del_size = sum(s)
-
 print('-------------------------------------------')
-print('total file size:', float(file_size*0.000001), 'MB')
+print('total file size:', float(file_size * 0.000001), 'MB')
 print('amount of files that will be deleted:', len(kill_list))
 # print('total file size of files to delete:', int(del_size*0.000001), 'MB')
 
@@ -126,9 +117,14 @@ if control == "y":
 else:
     exit()
 
-for filename in glob.glob(config.get('main').get('directory')):
-    os.remove(filename)
-
+my_dir = config.get('main').get('directory')
+del_list = []
+for filename in os.listdir(my_dir):
+    if filename in kill_list:
+        os.remove(os.path.join(my_dir, filename))
+        del_list.extend(filename)
+        print(filename, 'deleted.')
+print(len(del_list), "files have been deleted")
 
 # keep_list = [_ for _ in d[db_name] if _ not in kill_list]
 # # print(keep_list)
