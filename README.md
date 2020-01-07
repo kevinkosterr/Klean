@@ -1,4 +1,5 @@
 # Klean
+[![Build Status](https://travis-ci.com/kevinkosterr/Klean.svg?branch=master)](https://travis-ci.com/kevinkosterr/Klean)
 a script written to clean up database backups within a certain period of time. how much time there is allowed to be in between backups is configurable. this script currently only supports local use.
 
 ## Configuration:
