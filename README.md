@@ -1,5 +1,5 @@
 # Klean
-a script written to clean up database backups within a certain period of time. how much time there is allowed to be in between backups is configurable
+a script written to clean up database backups within a certain period of time. how much time there is allowed to be in between backups is configurable. this script currently only supports local use.
 
 ## Configuration:
 certain parts of this script can be configurated using the `config.toml` file.
