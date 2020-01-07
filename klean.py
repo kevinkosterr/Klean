@@ -122,9 +122,7 @@ del_list = []
 for filename in os.listdir(my_dir):
     if filename in kill_list:
         os.remove(os.path.join(my_dir, filename))
-        del_list.extend(filename)
         print(filename, 'deleted.')
-print(len(del_list), "files have been deleted")
 
 # keep_list = [_ for _ in d[db_name] if _ not in kill_list]
 # # print(keep_list)

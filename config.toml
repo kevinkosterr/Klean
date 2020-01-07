@@ -5,7 +5,7 @@ directory = "files" # please enter the full path
 prefix = "+"
 
 [bucket_first]
-#hours_between_backups=
+#hours_between=
 period_in_days= 7
 
 [bucket_second]
