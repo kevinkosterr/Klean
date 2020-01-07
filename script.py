@@ -109,7 +109,6 @@ for db_name in d.keys():
     kill_list.extend(this_kill_list)
     print(db_name, 'files found', len(d[db_name]), '# kill list:', len(this_kill_list))
 
-# getting the size
 file_size = os.path.getsize(config.get('main').get('directory'))
 
 print('-------------------------------------------')
