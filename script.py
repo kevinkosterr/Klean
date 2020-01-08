@@ -26,11 +26,15 @@ for filename in sorted(os.listdir(config.get('main').get('directory')), reverse=
 
 
 def parse_date(filename):
+    """ Gets the datetime object out of a filename
+
+        Parameters:
+            filename (str) : the filename that contains a datetime object in string
+
+        Returns:
+            parsed_file (datetime object) : the datetime object from filename
+
     """
-    gets the datetime object out of the filename
-    """
-    # file_parsed = datetime.strptime(filename, "%Y-%m-%d%" "H:%M:%S")
-    # return file_parsed
     try:
         file_to_parse = str(filename).split("+")[1].split(".")[0]
         parsed_file = datetime.strptime(str(file_to_parse).replace(";", '').replace('%3A', ':'), "%Y-%m-%d%" "H:%M:%S")
@@ -41,11 +45,15 @@ def parse_date(filename):
 
 
 def process_bucket(start_point, list_to_compare, hours):
-    """
-    calculates the difference between the starting point and the next item.
+    """ Calculates the difference between the starting point of one bucket and the first of the next bucket.
 
-    where the next item is first in the next list. parameter 'hours' defines how big the gap between the back-ups is
-    allowed to be.
+        Parameters:
+            start_point (list) : the first bucket, used as starting point
+            list_to_compare (list) : the bucket that needs to be compared to the start_point
+            hours (float) : the amount of hours there is allowed to be between each back-up, defined in config.toml
+
+        Returns:
+            kill_list (list) : a list of files that will be deleted
     """
     kill_list = []
     while len(list_to_compare) > 1:
@@ -80,6 +88,7 @@ for db_name in d.keys():
         diff = parse_date(a) - parse_date(cursor)
         # first bucket, period in days is defined in config file. standard is 7
         if diff <= timedelta(days=config.get('bucket_first').get('period_in_days')):
+            # appends to the bucket
             bucket1.append(cursor)
         # second bucket, period in days is defined in config file. standard is 15
         elif diff < timedelta(days=config.get('bucket_second').get('period_in_days')):
@@ -98,7 +107,9 @@ for db_name in d.keys():
     this_kill_list.extend(process_bucket(bucket2[-1], bucket3, config.get('bucket_third').get('hours_between')))
     this_kill_list.extend(process_bucket(bucket3[-1], bucket4, config.get('bucket_fourth').get('hours_between')))
     this_kill_list.extend(process_bucket(bucket4[-1], bucket5, config.get('bucket_fifth').get('hours_between')))
+    # extends kill_list with every this_kill_list to create one kill_list
     kill_list.extend(this_kill_list)
+    # prints the amount of files for every database and how many items will be deleted
     print(db_name, 'files found', len(d[db_name]), '# kill list:', len(this_kill_list))
 
 
@@ -114,6 +125,12 @@ for db_name in d.keys():
 
 
 def get_file_size():
+    """" Returns total size of files in directory
+
+        Returns:
+            total_size(int) : the total size of all files in the given directory
+
+    """
     total_size = sum(os.path.getsize(f) for f in os.listdir('.') if os.path.isfile(f))
     return total_size
     # file_size = os.path.getsize(config.get('main').get('directory'))
@@ -124,6 +141,8 @@ def get_file_size():
 
 
 def p_file_size():
+    """" Prints the file size of the result of get_file_size()
+    """
     print('-------------------------------------------')
     print('total file size: ', round(float(get_file_size() * 0.000001), 3), 'MB')
     # print('delete file size: ', round(float(get_del_file_size() * 0.000001), 3), 'MB')
@@ -133,6 +152,8 @@ p_file_size()
 
 
 def delete_files():
+    """" Deletes the files in kill_list
+    """
     my_dir = config.get('main').get('directory')
     # del_list = []
     for filename in os.listdir(my_dir):
@@ -146,6 +167,8 @@ def delete_files():
 
 
 def safety_measure():
+    """" Prevents deleting files before confirmation
+    """
     control = input("Would you like to delete these files? (y/n): ")
     if not control == 'y':
         if not control == 'n':

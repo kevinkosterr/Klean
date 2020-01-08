@@ -5,7 +5,7 @@ attrs==19.3.0
 cffi==1.13.2
 chardet==3.0.4
 fs==2.4.11
-idna==2.8
+idna==2.5
 keyboard==0.13.4
 multidict==4.5.2
 numpy==1.17.4
