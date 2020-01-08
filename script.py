@@ -74,7 +74,6 @@ def process_bucket(start_point, list_to_compare, hours):
 def fill_bucket():
     """" Fills the buckets with files and adds them to the kill_list
     """
-    kill_list = []
     for db_name in d.keys():
         this_kill_list = []
         bucket1 = []
@@ -169,6 +168,7 @@ if __name__ == '__main__':
     d = {}
 
     file_sorter()
+    kill_list = []
     fill_bucket()
     p_file_size()
     safety_measure()
