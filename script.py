@@ -11,7 +11,6 @@ config = toml.load('config.toml')
 
 d = {}
 
-
 # sorts the files and puts them in a dictionary
 for filename in sorted(os.listdir(config.get('main').get('directory')), reverse=True):
     if '+' not in filename:
@@ -104,8 +103,14 @@ for db_name in d.keys():
 
 
 # def get_del_file_size():
-#     total_delete = sum(os.path.getsize(f) for f in kill_list if os.path.isfile(f))
-#     return total_delete
+#     my_dir = config.get('main').get('directory')
+#     delete_size = 0
+#     for f in os.listdir(my_dir):
+#         if f in kill_list:
+#             os_path = my_dir, '/', f
+#             path_size = ''.join(os_path)
+#             delete_size += os.path.getsize(path_size)
+#     return delete_size
 
 
 def get_file_size():
@@ -121,7 +126,7 @@ def get_file_size():
 def p_file_size():
     print('-------------------------------------------')
     print('total file size: ', round(float(get_file_size() * 0.000001), 3), 'MB')
-    print('delete file size: ', round(float(get_del_file_size() * 0.000001), 3), 'MB')
+    # print('delete file size: ', round(float(get_del_file_size() * 0.000001), 3), 'MB')
 
 
 p_file_size()
