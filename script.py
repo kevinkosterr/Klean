@@ -11,7 +11,7 @@ config = toml.load('config.toml')
 
 d = {}
 
-# os.listdir("files")
+
 # sorts the files and puts them in a dictionary
 for filename in sorted(os.listdir(config.get('main').get('directory')), reverse=True):
     if '+' not in filename:
@@ -28,11 +28,7 @@ for filename in sorted(os.listdir(config.get('main').get('directory')), reverse=
 
 def parse_date(filename):
     """
-    EN:
     gets the datetime object out of the filename
-
-    NL:
-    haalt het datetime object uit de filename
     """
     # file_parsed = datetime.strptime(filename, "%Y-%m-%d%" "H:%M:%S")
     # return file_parsed
@@ -47,13 +43,10 @@ def parse_date(filename):
 
 def process_bucket(start_point, list_to_compare, hours):
     """
-    EN:
-    calculates the difference between the starting point and the next item, where the next item is first in the next
-    list. paramater 'hours' defines how big the gap between the back-ups is allowed to be.
+    calculates the difference between the starting point and the next item.
 
-    NL:
-    rekent het verschil tussen het startpunt en het volgende item, paramater hours geeft aan hoeveel uren
-    er maximaal tussen elke back-up mag zitten.
+    where the next item is first in the next list. parameter 'hours' defines how big the gap between the back-ups is
+    allowed to be.
     """
     kill_list = []
     while len(list_to_compare) > 1:
@@ -109,27 +102,54 @@ for db_name in d.keys():
     kill_list.extend(this_kill_list)
     print(db_name, 'files found', len(d[db_name]), '# kill list:', len(this_kill_list))
 
-file_size = os.path.getsize(config.get('main').get('directory'))
 
-print('-------------------------------------------')
-print('total file size:', float(file_size * 0.000001), 'MB')
-print('amount of files that will be deleted:', len(kill_list))
-# print('total file size of files to delete:', int(del_size*0.000001), 'MB')
+# def get_del_file_size():
+#     total_delete = sum(os.path.getsize(f) for f in kill_list if os.path.isfile(f))
+#     return total_delete
 
-control = input("Would you like to delete these files? (y/n): ")
-if control == "y":
-    pass
-else:
-    exit()
 
-my_dir = config.get('main').get('directory')
-del_list = []
-for filename in os.listdir(my_dir):
-    if filename in kill_list:
-        os.remove(os.path.join(my_dir, filename))
-        print(filename, 'deleted.')
+def get_file_size():
+    total_size = sum(os.path.getsize(f) for f in os.listdir('.') if os.path.isfile(f))
+    return total_size
+    # file_size = os.path.getsize(config.get('main').get('directory'))
+    #
+    # print('-------------------------------------------')
+    # print('total file size:', float(file_size * 0.000001), 'MB')
+    # print('amount of files that will be deleted:', len(kill_list))
 
-# keep_list = [_ for _ in d[db_name] if _ not in kill_list]
-# # print(keep_list)
-# for idx, filename in enumerate(keep_list[:-1]):
-#     print(idx, parse_date(filename) - parse_date(keep_list[idx + 1]), filename)
+
+def p_file_size():
+    print('-------------------------------------------')
+    print('total file size: ', round(float(get_file_size() * 0.000001), 3), 'MB')
+    print('delete file size: ', round(float(get_del_file_size() * 0.000001), 3), 'MB')
+
+
+p_file_size()
+
+
+def delete_files():
+    my_dir = config.get('main').get('directory')
+    # del_list = []
+    for filename in os.listdir(my_dir):
+        if filename in kill_list:
+            os.remove(os.path.join(my_dir, filename))
+            print(filename, 'deleted.')
+        # keep_list = [_ for _ in d[db_name] if _ not in kill_list]
+        # # print(keep_list)
+        # for idx, filename in enumerate(keep_list[:-1]):
+        #     print(idx, parse_date(filename) - parse_date(keep_list[idx + 1]), filename)
+
+
+def safety_measure():
+    control = input("Would you like to delete these files? (y/n): ")
+    if not control == 'y':
+        if not control == 'n':
+            print('Invalid. (y/n)')
+            safety_measure()
+    if control == 'n':
+        exit()
+    if control == 'y':
+        delete_files()
+
+
+safety_measure()
