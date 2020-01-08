@@ -138,7 +138,7 @@ def delete_files():
     for filename in os.listdir(my_dir):
         if filename in kill_list:
             os.remove(os.path.join(my_dir, filename))
-            print(filename, 'deleted.')
+            print('[', parse_date(filename), ']', filename, 'deleted.')
         # keep_list = [_ for _ in d[db_name] if _ not in kill_list]
         # # print(keep_list)
         # for idx, filename in enumerate(keep_list[:-1]):
