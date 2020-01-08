@@ -113,17 +113,6 @@ for db_name in d.keys():
     print(db_name, 'files found', len(d[db_name]), '# kill list:', len(this_kill_list))
 
 
-# def get_del_file_size():
-#     my_dir = config.get('main').get('directory')
-#     delete_size = 0
-#     for f in os.listdir(my_dir):
-#         if f in kill_list:
-#             os_path = my_dir, '/', f
-#             path_size = ''.join(os_path)
-#             delete_size += os.path.getsize(path_size)
-#     return delete_size
-
-
 def get_file_size():
     """" Returns total size of files in directory
 
