@@ -4,13 +4,6 @@ from datetime import datetime, timedelta
 import cProfile
 
 
-#
-# # sets the config file
-# def set_config(subject, instance):
-#     config = toml.load('config.toml')
-#     return config.get(subject).get(instance)
-
-
 # get a sorted list of files
 def get_sorted_files():
     sorted_files = sorted(os.listdir(config.get('main').get('directory')), reverse=True)
@@ -53,7 +46,9 @@ def get_file_date(filename):
     """
     try:
         # TODO: make the prefix configurable
+        # splits the filename from the prefix to the datetime string
         file_to_parse = str(filename).split("+")[1].split(".")[0]
+        # gets the datetime string and converts it to a datetime object
         file_date = datetime.strptime(str(file_to_parse).replace(";", '').replace('%3A', ':'), "%Y-%m-%d%" "H:%M:%S")
     except:
         print('error with', filename)
@@ -82,7 +77,6 @@ def create_kill_list(bucket_start: list, bucket_to_compare: list, hours):
     return kill_list
 
 
-# create buckets, fill them with the files per database
 def store_files_in_buckets():
     files_per_db = get_files_per_db()
     kill_list = []
@@ -115,9 +109,8 @@ def store_files_in_buckets():
 
         print(db_name, 'files found', len(files_per_db[db_name]), '# kill list:', len(this_kill_list))
 
+    return kill_list
 
-# def show_kill_list():
-#     return
 
 def file_size():
     total_size = sum(os.path.getsize(f) for f in os.listdir(config.get('main').get('directory')) if os.path.isfile(f)) * 0.000001
@@ -137,7 +130,7 @@ def confirm_delete():
 
 def delete_files():
     # TODO: make the kill_list available here
-    # kill_list = store_files_in_buckets()
+    kill_list = store_files_in_buckets()
     for filename in get_sorted_files():
         if filename in kill_list:
             try:
@@ -151,5 +144,5 @@ def delete_files():
 if __name__ == '__main__':
     config = toml.load('config.toml')
     store_files_in_buckets()
-    # cProfile.run('store_files_in_buckets()', sort='time')
+    # # cProfile.run('store_files_in_buckets()', sort='time')
     confirm_delete()
