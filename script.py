@@ -1,11 +1,18 @@
+"""" Script that makes deleting backups way easier.
+
+TODO: add proper documentation
+"""
 import toml
 import os
 from datetime import datetime, timedelta
 import cProfile
 
 
-# get a sorted list of files
 def get_sorted_files():
+    """ Gets a sorted list of files.
+
+        :return: sorted_files: a sorted os.listdir
+        """
     sorted_files = sorted(os.listdir(config.get('main').get('directory')), reverse=True)
     # return a reverse sorted file list
     return sorted_files
@@ -77,7 +84,7 @@ def create_kill_list(bucket_start: list, bucket_to_compare: list, hours):
 
 
 def store_files_in_buckets():
-    """ Stores the files in buckets, uses
+    """ Stores the files in buckets.
 
     :return: kill_list: list of files to delete
     """
@@ -123,6 +130,11 @@ def store_files_in_buckets():
 
 
 def kill_list_size(kill_list):
+    """ Calculates the total size of the files that will be deleted.
+
+    :param kill_list: the kill_list created in store_files_in_buckets()
+    :return: kill_list_size: size of all files that will be deleted
+    """
     kill_list_size = 0
     for filename in kill_list:
         file_size = os.path.getsize(f"{config.get('main').get('directory')}\\{filename}")
@@ -131,11 +143,19 @@ def kill_list_size(kill_list):
 
 
 def total_size_files():
+    """ Calculates the total file size of a directory.
+
+    :return: total_size: total file size of the directory given in config.toml
+    """
     total_size = sum(os.path.getsize(f) for f in os.listdir(config.get('main').get('directory')) if os.path.isfile(f))
     return total_size
 
 
 def confirm_delete(kill_list):
+    """ Asks the user for confirmation whether the files should be deleted or not.
+
+    :param kill_list: the kill_list created in store_files_in_buckets()
+    """
     delete_file_size = round(float(kill_list_size(kill_list) * 0.000001), 3)
     total_size = round(float(total_size_files() * 0.000001), 3)
     print(f'\ntotal file size of files in directory: {total_size} MB')
