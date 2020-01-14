@@ -25,10 +25,10 @@ def get_files_per_db():
     sorted_files = get_sorted_files()
     # goes through the sorted os.listdir
     for filename in sorted_files:
-        if '+' not in filename:
+        if f"{config.get('main').get('prefix')}" not in filename:
             continue
         # TODO: make the prefix configurable
-        key_name = filename.split('+')[0]
+        key_name = filename.split(f"{config.get('main').get('prefix')}")[0]
         # if key doesn't exist yet, creates a key with an empty list
         if key_name not in files_per_db:
             files_per_db[key_name] = []
@@ -45,7 +45,6 @@ def get_file_date(filename):
     :return: file_date: parsed datetime object out of the filename
     """
     try:
-        # TODO: make the prefix configurable
         # splits the filename from the prefix to the datetime string
         file_to_parse = str(filename).split("+")[1].split(".")[0]
         # gets the datetime string and converts it to a datetime object
@@ -78,9 +77,16 @@ def create_kill_list(bucket_start: list, bucket_to_compare: list, hours):
 
 
 def store_files_in_buckets():
+    """ Stores the files in buckets, uses
+
+    :return: kill_list: list of files to delete
+    """
     files_per_db = get_files_per_db()
     kill_list = []
+    # Searches for db_names in files_per_db.keys()
     for db_name in files_per_db.keys():
+        # Creating an empty kill_list for every key in the dictionary
+        # used for showing the amount of files per database that will be deleted.
         this_kill_list = []
         bucket1 = []
         bucket2 = []
@@ -90,8 +96,12 @@ def store_files_in_buckets():
         first_element = files_per_db[db_name][0]
         for cursor in files_per_db[db_name]:
             diff = calc_diff_between_dates(first_element, cursor)
+            # Period in days is configurable.
+            # If difference is smaller than or the same as period in days in config.toml
+            # append it to the first bucket.
             if diff <= timedelta(days=config.get('bucket_first').get('period_in_days')):
                 bucket1.append(cursor)
+            # If difference is smaller as the period in days append to the second bucket.
             elif diff < timedelta(days=config.get('bucket_second').get('period_in_days')):
                 bucket2.append(cursor)
             elif diff < timedelta(days=config.get('bucket_third').get('period_in_days')):
@@ -147,7 +157,8 @@ def delete_files(kill_list):
                 os.remove(os.path.join(file_dir, filename))
                 print(filename, 'removed')
             except OSError:
-                raise OSError
+                print(f'ERROR with {filename}')
+                raise
     print(f'files have been deleted succesfully')
     exit()
 
