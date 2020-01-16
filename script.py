@@ -2,6 +2,7 @@ import toml
 import os
 from datetime import datetime, timedelta
 import sys
+from b2blaze import B2
 
 
 # from fs.osfs import OSFS
@@ -230,6 +231,11 @@ class LocalFS(Filesystem):
 
 class B2FS(Filesystem):
     "details ingevuld die werken met b2blaze library"
+    def __init__(self, bucket):
+        self.bucket = bucket
+        super().__init__()
+
+    def get_sorted_files(self):
 
 
 # class SshFS(Filesystem):
