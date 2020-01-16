@@ -174,7 +174,7 @@ class LocalFS(Filesystem):
             kill_list.extend(this_kill_list)
 
             print(db_name, 'files found', len(files_per_db[db_name]), '# kill list:', len(this_kill_list))
-            return kill_list
+        return kill_list
 
     def kill_list_size(self, kill_list):
         """ Calculates the total size of the files that will be deleted.
@@ -242,16 +242,15 @@ class B2FS(Filesystem):
 if __name__ == '__main__':
     c = toml.load('config.toml')
     my_dir = c.get('main').get('directory')
-    # if not my_dir:
-    #     print("You have not set a working directory yet.")
-    #     exit(1)
-    # if len(sys.argv) < 2:
-    #     print("Choose a filesystem: LocalFS")
-    #     fs = input("")
-    #     if fs == 'LocalFS':
-    #         fs = LocalFS(my_dir)
+    if not my_dir:
+        print("You have not set a working directory yet. \nA directory can be set in config.toml")
+        exit(1)
+    if len(sys.argv) < 2:
+        print("Choose a filesystem: LocalFS | B2FS")
+        fs = input("")
+        if fs == 'LocalFS':
+            fs = LocalFS(my_dir)
 
-    fs = LocalFS(my_dir)
     sorted_files = fs.sorted_files
     kill_list = fs.store_files_in_buckets(fs.files_per_db)
     fs.confirm_delete(kill_list)
