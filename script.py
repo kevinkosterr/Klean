@@ -1,10 +1,10 @@
-from abc import ABC
-
 import toml
 import os
 from datetime import datetime, timedelta
-from fs.osfs import OSFS
 import sys
+
+
+# from fs.osfs import OSFS
 
 
 class Filesystem:
@@ -53,7 +53,6 @@ class LocalFS(Filesystem):
             return _config_cache
         _config_cache.update(toml.load('config.toml'))
         return _config_cache
-
 
     def get_sorted_files(self):
         """ Gets a sorted list of files.
@@ -253,4 +252,3 @@ if __name__ == '__main__':
     sorted_files = fs.get_sorted_files()
     kill_list = fs.store_files_in_buckets()
     fs.confirm_delete(kill_list)
-
