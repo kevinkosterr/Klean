@@ -18,13 +18,13 @@ class Filesystem:
     def calc_diff_between_dates(self, filedate1, filedate2):
         raise NotImplementedError()
 
-    def get_files_per_db(self):
+    def get_files_per_db(self, sorted_files):
         raise NotImplementedError()
 
     def create_kill_list(self, bucket_start: list, bucket_to_compare: list, hours):
         raise NotImplementedError()
 
-    def store_files_in_buckets(self):
+    def store_files_in_buckets(self, files_per_db):
         raise NotImplementedError()
 
     def kill_list_size(self, kill_list):
@@ -45,6 +45,8 @@ class LocalFS(Filesystem):
 
     def __init__(self, working_dir):
         self.working_dir = working_dir
+        self.sorted_files = self.get_sorted_files()
+        self.files_per_db = self.get_files_per_db(self.sorted_files)
         super().__init__()
 
     @staticmethod
@@ -67,7 +69,7 @@ class LocalFS(Filesystem):
         diff = self.get_file_date(filedate1) - self.get_file_date(filedate2)
         return diff
 
-    def get_files_per_db(self):
+    def get_files_per_db(self, sorted_files):
         """Gets the files per database and puts them into a dictionary
 
         :return: files_per_db: dictionary filled with files per database
@@ -126,12 +128,12 @@ class LocalFS(Filesystem):
 
         return kill_list
 
-    def store_files_in_buckets(self):
+    def store_files_in_buckets(self, files_per_db):
         """ Stores the files in buckets.
 
         :return: kill_list: list of files to delete
         """
-        files_per_db = self.get_files_per_db()
+        files_per_db = self.get_files_per_db(self.get_sorted_files())
         kill_list = []
         # Searches for db_names in files_per_db.keys()
         for db_name in files_per_db.keys():
@@ -207,8 +209,8 @@ class LocalFS(Filesystem):
         confirm = input("\nAre you sure you want to delete these files? (y/n) ")
         if confirm == 'y':
             self.delete_files(kill_list)
-        if confirm == 'n':
-            print('Ok.')
+        elif confirm == 'n':
+            exit()
         else:
             self.confirm_delete(kill_list)
 
@@ -240,15 +242,16 @@ class B2FS(Filesystem):
 if __name__ == '__main__':
     c = toml.load('config.toml')
     my_dir = c.get('main').get('directory')
-    if not my_dir:
-        print("You have not set a working directory yet.")
-        exit(1)
-    if len(sys.argv) < 2:
-        print("Choose a filesystem: LocalFS")
-        fs = input("")
-        if fs == 'LocalFS':
-            fs = LocalFS(my_dir)
+    # if not my_dir:
+    #     print("You have not set a working directory yet.")
+    #     exit(1)
+    # if len(sys.argv) < 2:
+    #     print("Choose a filesystem: LocalFS")
+    #     fs = input("")
+    #     if fs == 'LocalFS':
+    #         fs = LocalFS(my_dir)
 
-    sorted_files = fs.get_sorted_files()
-    kill_list = fs.store_files_in_buckets()
+    fs = LocalFS(my_dir)
+    sorted_files = fs.sorted_files
+    kill_list = fs.store_files_in_buckets(fs.files_per_db)
     fs.confirm_delete(kill_list)
