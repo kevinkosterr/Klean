@@ -9,12 +9,6 @@ class LocalFS(Filesystem):
         self.working_dir = working_dir
         super().__init__()
 
-    def __init__(self, working_dir):
-        self.working_dir = working_dir
-        self.sorted_files = self.get_sorted_files()
-        self.files_per_db = self.get_files_per_db(self.sorted_files)
-        super().__init__()
-
     @staticmethod
     def config(_config_cache={}):
         if _config_cache:
