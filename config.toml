@@ -1,8 +1,14 @@
 # 0.5 addition to hours_between_backups is for safety purposes, so the script doesn't accidentally delete wrong files.
 
 [main]
-directory = "files" # please enter the full path, don't include the last backslash
 prefix = "+"
+
+[LocalFS]
+directory = "files" # please enter the full path, don't include the last backslash
+
+[B2Blaze]
+bucket = ""
+folder = ""
 
 [bucket_first]
 #hours_between=

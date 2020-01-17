@@ -2,7 +2,7 @@ import toml
 import os
 from datetime import datetime, timedelta
 import sys
-from b2blaze import B2
+import b2blaze
 
 
 # from fs.osfs import OSFS
@@ -42,8 +42,6 @@ class Filesystem:
 
 
 class LocalFS(Filesystem):
-    "details ingevuld die lokaal werken"
-
     def __init__(self, working_dir):
         self.working_dir = working_dir
         self.sorted_files = self.get_sorted_files()
@@ -76,7 +74,7 @@ class LocalFS(Filesystem):
         :return: files_per_db: dictionary filled with files per database
         """
         files_per_db = {}
-        sorted_files = self.get_sorted_files()
+        sorted_files = self.sorted_files
         prefix = self.config().get('main').get('prefix')
         # goes through the sorted os.listdir
         for filename in sorted_files:
@@ -229,25 +227,10 @@ class LocalFS(Filesystem):
         exit()
 
 
-class B2FS(Filesystem):
-    "details ingevuld die werken met b2blaze library"
-    def __init__(self, bucket):
-        self.bucket = bucket
-        super().__init__()
-
-    def get_sorted_files(self):
-
-
-# class SshFS(Filesystem):
-#
-#     "details ingevuld met gebruik van plumbum"
-#
-# class Fs2FS(Filesystem):
-#     "details ingevul met gebruik van een willekeurig FS2 filesystem"
-
 if __name__ == '__main__':
     c = toml.load('config.toml')
-    my_dir = c.get('main').get('directory')
+    my_dir = c.get('LocalFS').get('directory')
+    bucket_name = c.get('B2Blaze').get('bucket')
     if not my_dir:
         print("You have not set a working directory yet. \nA directory can be set in config.toml")
         exit(1)
