@@ -1,10 +1,10 @@
-from Filesystems.Filesystem import Filesystem
+import Filesystems.Filesystem
 import toml
 import os
 from datetime import datetime, timedelta
 
 
-class LocalFS(Filesystem):
+class LocalFS(Filesystems.Filesystem.Filesystem):
     def __init__(self, working_dir):
         self.working_dir = working_dir
         super().__init__()
