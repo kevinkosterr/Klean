@@ -1,47 +1,14 @@
+from Filesystems.Filesystem import Filesystem
 import toml
 import os
 from datetime import datetime, timedelta
-import sys
-import b2blaze
-
-
-# from fs.osfs import OSFS
-
-
-class Filesystem:
-
-    def get_sorted_files(self):
-        raise NotImplementedError()
-
-    def get_file_date(self, filename):
-        raise NotImplementedError()
-
-    def calc_diff_between_dates(self, filedate1, filedate2):
-        raise NotImplementedError()
-
-    def get_files_per_db(self, sorted_files):
-        raise NotImplementedError()
-
-    def create_kill_list(self, bucket_start: list, bucket_to_compare: list, hours):
-        raise NotImplementedError()
-
-    def store_files_in_buckets(self, files_per_db):
-        raise NotImplementedError()
-
-    def kill_list_size(self, kill_list):
-        raise NotImplementedError()
-
-    def total_file_size(self):
-        raise NotImplementedError()
-
-    def confirm_delete(self, kill_list):
-        raise NotImplementedError()
-
-    def delete_files(self, kill_list):
-        raise NotImplementedError()
 
 
 class LocalFS(Filesystem):
+    def __init__(self, working_dir):
+        self.working_dir = working_dir
+        super().__init__()
+
     def __init__(self, working_dir):
         self.working_dir = working_dir
         self.sorted_files = self.get_sorted_files()
@@ -225,21 +192,3 @@ class LocalFS(Filesystem):
                     raise
         print(f'files have been deleted succesfully')
         exit()
-
-
-if __name__ == '__main__':
-    c = toml.load('config.toml')
-    my_dir = c.get('LocalFS').get('directory')
-    bucket_name = c.get('B2Blaze').get('bucket')
-    if not my_dir:
-        print("You have not set a working directory yet. \nA directory can be set in config.toml")
-        exit(1)
-    if len(sys.argv) < 2:
-        print("Choose a filesystem: LocalFS | B2FS")
-        fs = input("")
-        if fs == 'LocalFS':
-            fs = LocalFS(my_dir)
-
-    sorted_files = fs.sorted_files
-    kill_list = fs.store_files_in_buckets(fs.files_per_db)
-    fs.confirm_delete(kill_list)
