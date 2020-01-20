@@ -4,11 +4,13 @@
 prefix = "+"
 
 [LocalFS]
-directory = "" # please enter the full path, don't include the last backslash
+directory = "files" # please enter the full path, don't include the last backslash
 
 [B2Blaze]
-bucket = ""
+bucket = "ew-files"
 folder = ""
+username = ""
+password = ""
 
 [bucket_first]
 #hours_between=
@@ -28,4 +30,4 @@ period_in_days= 84
 
 [bucket_fifth]
 hours_between= 168.5
-period_in_days= 84
+period_in_days= 85
