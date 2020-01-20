@@ -4,11 +4,13 @@
 prefix = "+"
 
 [LocalFS]
-directory = "files" # please enter the full path, don't include the last backslash
+directory = "" # please enter the full path, don't include the last backslash
 
 [B2Blaze]
 bucket = ""
 folder = ""
+key_id = ""
+app_id = ""
 
 [bucket_first]
 #hours_between=
