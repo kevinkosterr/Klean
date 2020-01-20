@@ -29,6 +29,6 @@ if __name__ == '__main__':
             except:
                 fs = B2FS(bucket_name, key_id, app_id, folder)
 
-    sorted_files = fs.file_names
+    sorted_files = fs.sorted_files
     kill_list = fs.store_files_in_buckets(fs.files_per_db)
     fs.confirm_delete(kill_list)

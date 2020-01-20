@@ -16,7 +16,7 @@ class LocalFS(Filesystems.Filesystem.Filesystem):
         _config_cache.update(toml.load('config.toml'))
         return _config_cache
 
-    def get_file_names(self):
+    def get_sorted_files(self):
         """ Gets a sorted list of files.
 
             :return: a sorted os.listdir
@@ -64,6 +64,12 @@ class LocalFS(Filesystems.Filesystem.Filesystem):
             self.confirm_delete(kill_list)
 
     def delete_files(self, kill_list):
+        '''
+        delete these filenames.
+
+        :param kill_list: list of filenames to remove
+        :return: None
+        '''
         file_dir = self.working_dir
         for filename in os.listdir(file_dir):
             if filename in kill_list:
@@ -74,4 +80,4 @@ class LocalFS(Filesystems.Filesystem.Filesystem):
                     print(f'ERROR with {filename}')
                     raise
         print(f'files have been deleted succesfully')
-        exit()
+        # exit() -- hoezo? terminate programma hoort hier niet thuis
