@@ -9,8 +9,8 @@ directory = "files" # please enter the full path, don't include the last backsla
 [B2Blaze]
 bucket = "ew-files"
 folder = ""
-username = ""
-password = ""
+key_id = "0005de65bfdf9c60000000001"
+app_id = "K000PwvebR640aawZL0x4WfMdEd2c9k"
 
 [bucket_first]
 #hours_between=
@@ -30,4 +30,4 @@ period_in_days= 84
 
 [bucket_fifth]
 hours_between= 168.5
-period_in_days= 85
+period_in_days= 84
