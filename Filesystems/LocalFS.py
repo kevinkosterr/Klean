@@ -16,7 +16,7 @@ class LocalFS(Filesystems.Filesystem.Filesystem):
         _config_cache.update(toml.load('config.toml'))
         return _config_cache
 
-    def get_sorted_files(self):
+    def get_file_names(self):
         """ Gets a sorted list of files.
 
             :return: a sorted os.listdir

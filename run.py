@@ -3,7 +3,6 @@ import sys
 from Filesystems.LocalFS import LocalFS
 from Filesystems.B2FS import B2FS
 
-
 # class SshFS(Filesystem):
 #
 #     "details ingevuld met gebruik van plumbum"
@@ -26,10 +25,10 @@ if __name__ == '__main__':
             fs = LocalFS(my_dir)
         if fs == 'B2FS':
             try:
-                fs = B2FS(bucket_name,  key_id, app_id)
+                fs = B2FS(bucket_name, key_id, app_id)
             except:
-                fs = B2FS(bucket_name,  key_id, app_id, folder)
+                fs = B2FS(bucket_name, key_id, app_id, folder)
 
-    sorted_files = fs.sorted_files
+    sorted_files = fs.file_names
     kill_list = fs.store_files_in_buckets(fs.files_per_db)
     fs.confirm_delete(kill_list)

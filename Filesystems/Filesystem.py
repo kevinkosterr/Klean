@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 
 class Filesystem:
     def __init__(self):
-        self.sorted_files = self.get_sorted_files()
-        self.files_per_db = self.get_files_per_db(self.sorted_files)
+        self.file_names = self.get_file_names()
+        self.files_per_db = self.get_files_per_db(self.file_names)
 
-    def get_sorted_files(self):
+    def get_file_names(self):
         raise NotImplementedError()
 
     def parse_filename_to_date(self, filename):
@@ -37,7 +37,7 @@ class Filesystem:
         :return: files_per_db: dictionary filled with files per database
         """
         files_per_db = {}
-        sorted_files = self.sorted_files
+        sorted_files = self.file_names
         prefix = self.config().get('main').get('prefix')
         # goes through the sorted files
         for filename in sorted_files:
@@ -77,7 +77,7 @@ class Filesystem:
 
         :return: kill_list: list of files to delete
         """
-        files_per_db = self.get_files_per_db(self.get_sorted_files())
+        files_per_db = self.get_files_per_db(self.get_file_names())
         kill_list = []
         # Searches for db_names in files_per_db.keys()
         for db_name in files_per_db.keys():
