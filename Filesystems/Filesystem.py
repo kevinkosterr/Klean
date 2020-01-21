@@ -112,13 +112,20 @@ class Filesystem:
                     bucket5.append(cursor)
 
             this_kill_list.extend(
-                self.create_kill_list(bucket1[-1], bucket2, self.config().get('bucket_second').get('hours_between')))
-            this_kill_list.extend(
-                self.create_kill_list(bucket2[-1], bucket3, self.config().get('bucket_third').get('hours_between')))
-            this_kill_list.extend(
-                self.create_kill_list(bucket3[-1], bucket4, self.config().get('bucket_fourth').get('hours_between')))
-            this_kill_list.extend(
-                self.create_kill_list(bucket4[-1], bucket5, self.config().get('bucket_fifth').get('hours_between')))
+                self.create_kill_list(bucket1[-1], bucket2,
+                                      self.config().get('bucket_second').get('hours_between')))
+            if bucket2:
+                this_kill_list.extend(
+                    self.create_kill_list(bucket2[-1], bucket3,
+                                          self.config().get('bucket_third').get('hours_between')))
+            if bucket3:
+                this_kill_list.extend(
+                    self.create_kill_list(bucket3[-1], bucket4,
+                                          self.config().get('bucket_fourth').get('hours_between')))
+            if bucket4:
+                this_kill_list.extend(
+                    self.create_kill_list(bucket4[-1], bucket5,
+                                          self.config().get('bucket_fifth').get('hours_between')))
             kill_list.extend(this_kill_list)
 
             print(db_name, 'files found', len(files_per_db[db_name]), '# kill list:', len(this_kill_list))

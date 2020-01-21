@@ -3,3 +3,4 @@ files/
 filecreate.py
 filelist
 venv
+config.toml
