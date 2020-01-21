@@ -15,12 +15,20 @@ class B2FS(Filesystems.Filesystem.Filesystem):
 
     @staticmethod
     def config(_config_cache={}):
+        """
+        Caches the configuration for speed optimization
+        """
         if _config_cache:
             return _config_cache
         _config_cache.update(toml.load('config.toml'))
         return _config_cache
 
     def get_sorted_files(self):
+        """
+        Gets a sorted list of filenames.
+
+            :return: a sorted list of filenames
+        """
         # putting the filenames as keys into a dictionary
         # every value of a filename is a B2File object
         self.filenames_to_obj_map = {_.file_name: _ for _ in self.bucket.files.all()}
@@ -28,6 +36,12 @@ class B2FS(Filesystems.Filesystem.Filesystem):
         return sorted(filenames, reverse=True)
 
     def confirm_delete(self, kill_list):
+        """
+        Asks the user for confirmation, if they want to delete the files or not.
+        This can be skipped by passing -y as argument in the command line
+
+            :param kill_list: the kill_list extended by store_files_in_buckets()
+        """
         confirm = input("Are you sure you want to delete these files? (y/n) ")
         if confirm == 'y':
             self.delete_files(kill_list)
@@ -35,7 +49,13 @@ class B2FS(Filesystems.Filesystem.Filesystem):
             exit()
 
     def delete_files(self, kill_list):
+        """
+        Deletes the B2File objects based on the filenames in kill_list
+
+            :param kill_list: the kill_list extended by store_files_in_buckets()
+        """
         for filename in kill_list:
+            # refers to the empty dictionary defined in __init__ of this class
             obj = self.filenames_to_obj_map[filename]
             path = b2blaze.API.delete_file_version
             params = {
