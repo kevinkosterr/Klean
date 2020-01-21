@@ -18,7 +18,13 @@ if __name__ == '__main__':
     key_id = c.get('B2Blaze').get('key_id')
     app_id = c.get('B2Blaze').get('app_id')
     folder = c.get('B2Blaze').get('folder')
-    if len(sys.argv) < 2:
+    if '-y' in sys.argv:
+        skip = True
+        try:
+            fs = B2FS(bucket_name, key_id, app_id)
+        except:
+            fs = B2FS(bucket_name, key_id, app_id, folder)
+    elif len(sys.argv) < 2:
         print("Choose a filesystem: LocalFS | B2FS")
         fs = input("")
         if fs == 'LocalFS':
@@ -31,4 +37,7 @@ if __name__ == '__main__':
 
     sorted_files = fs.sorted_files
     kill_list = fs.store_files_in_buckets(fs.files_per_db)
-    fs.confirm_delete(kill_list)
+    if skip:
+        fs.delete_files(kill_list)
+    else:
+        fs.confirm_delete(kill_list)
