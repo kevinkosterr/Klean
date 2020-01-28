@@ -1,7 +1,6 @@
 import Filesystems.Filesystem
 import toml
 import os
-from datetime import timedelta
 
 
 class LocalFS(Filesystems.Filesystem.Filesystem):
@@ -49,6 +48,7 @@ class LocalFS(Filesystems.Filesystem.Filesystem):
 
             :return: total_size: total file size of the directory given in config.toml
         """
+        # sums up all file sizes
         total_size = sum(
             os.path.getsize(f) for f in os.listdir(self.working_dir) if os.path.isfile(f))
         return total_size
@@ -63,8 +63,11 @@ class LocalFS(Filesystems.Filesystem.Filesystem):
         delete_file_size = round(float(self.kill_list_size(kill_list) * 0.000001), 3)
         # total size of all files in the directory
         total_size = round(float(self.total_file_size() * 0.000001), 3)
+        # printing the total file size and total kill list file size
         print(f'\ntotal file size of files in directory: {total_size} MB')
         print(f'# kill list file size: {delete_file_size} MB')
+        # confirming if the files should be deleted
+        # this can be skipped by passing -y into the commandline
         confirm = input("\nAre you sure you want to delete these files? (y/n) ")
         if confirm == 'y':
             self.delete_files(kill_list)
@@ -81,10 +84,12 @@ class LocalFS(Filesystems.Filesystem.Filesystem):
         """
         file_dir = self.working_dir
         for filename in os.listdir(file_dir):
+            # if the filename is in the kill_list delete it
             if filename in kill_list:
                 try:
                     os.remove(os.path.join(file_dir, filename))
                     print(filename, 'removed')
+                # prints ERROR follow by the filename if an OSError occurs
                 except OSError:
                     print(f'ERROR with {filename}')
                     raise

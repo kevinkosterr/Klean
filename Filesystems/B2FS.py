@@ -42,6 +42,8 @@ class B2FS(Filesystems.Filesystem.Filesystem):
 
             :param kill_list: the kill_list extended by store_files_in_buckets()
         """
+        # confirming if the file should be deleted
+        # this can be skipped by passing -y into the command line
         confirm = input("Are you sure you want to delete these files? (y/n) ")
         if confirm == 'y':
             self.delete_files(kill_list)
