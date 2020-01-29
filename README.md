@@ -1,8 +1,5 @@
-<div align='center'>
- <h1>Klean</h1>
- 
+## Klean
 > A database backup cleaner. Sorts files by date and deletes the ones you don't need anymore. 
-</div>
 
 ![RepoSize](https://img.shields.io/github/repo-size/kevinkosterr/Klean)
 
