@@ -1,6 +1,6 @@
 # Klean
 > A database backup cleaner. Sorts files by date and deletes the ones you don't need anymore. 
-
+![version](https://img.shields.io/github/v/release/kevinkosterr/Klean?include_prereleases)
 
 #### supports:
 ![BackBlaze](https://www.backblaze.com/pics/backblaze-logo.gif)
