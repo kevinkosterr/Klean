@@ -5,7 +5,7 @@
 </div>
 
 <div align='center'>
-![RepoSize](https://img.shields.io/github/repo-size/kevinkosterr/Klean)
+ <a href='https://img.shields.io/github/repo-size/kevinkosterr/Klean'></a>
  </div>
 
 #### supports:
