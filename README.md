@@ -4,9 +4,8 @@
 > A database backup cleaner. Sorts files by date and deletes the ones you don't need anymore. 
 </div>
 
-<div align='center'>
- <a href='https://img.shields.io/github/repo-size/kevinkosterr/Klean'></a>
- </div>
+![RepoSize](https://img.shields.io/github/repo-size/kevinkosterr/Klean)
+
 
 #### supports:
 ![BackBlaze](https://www.backblaze.com/pics/backblaze-logo.gif)
