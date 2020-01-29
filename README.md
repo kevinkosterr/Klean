@@ -1,7 +1,8 @@
-## Klean
+# Klean
 > A database backup cleaner. Sorts files by date and deletes the ones you don't need anymore. 
 
 ![RepoSize](https://img.shields.io/github/repo-size/kevinkosterr/Klean)
+![Releases](https://img.shields.io/github/v/release/kevinkosterr/Klean?include_prereleases)
 
 
 #### supports:
