@@ -30,16 +30,15 @@ if __name__ == '__main__':
         except:
             fs = B2FS(bucket_name, key_id, app_id)
     if not skip:
-        if len(sys.argv) < 2:
-            print("Choose a filesystem: LocalFS | B2FS")
-            fs = input("")
-            if fs == 'LocalFS':
-                fs = LocalFS(my_dir)
-            if fs == 'B2FS':
-                try:
-                    fs = B2FS(bucket_name, key_id, app_id)
-                except:
-                    fs = B2FS(bucket_name, key_id, app_id, folder)
+        print("Choose a filesystem: LocalFS | B2FS")
+        fs = input("")
+        if fs == 'LocalFS':
+            fs = LocalFS(my_dir)
+        if fs == 'B2FS':
+            try:
+                fs = B2FS(bucket_name, key_id, app_id)
+            except Exception:
+                fs = B2FS(bucket_name, key_id, app_id, folder)
 
     sorted_files = fs.sorted_files
     kill_list = fs.store_files_in_buckets(fs.files_per_db)
