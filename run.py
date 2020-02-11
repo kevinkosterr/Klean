@@ -2,6 +2,7 @@ import toml
 import sys
 from Filesystems.LocalFS import LocalFS
 from Filesystems.B2FS import B2FS
+import pprint
 
 # class SshFS(Filesystem):
 #
@@ -21,14 +22,22 @@ if __name__ == '__main__':
     app_id = c.get('B2Blaze').get('app_id')
     folder = c.get('B2Blaze').get('folder')
     skip = False
-    # skips the confirmation if -y is passed into the commandline
+
+    # if -y is given as an argument, it skips the confirmation
     if '-y' in sys.argv:
         skip = True
-        try:
-            fs = B2FS(bucket_name, key_id, app_id, folder)
-        # if the folder is not found, try it without the folder
-        except:
-            fs = B2FS(bucket_name, key_id, app_id)
+
+    # if --do-delete is not given, it will only print out which
+    # which files it was going to delete if you were to run the program
+    if '--do-delete' not in sys.argv:
+        fs = B2FS(bucket_name, key_id, app_id)
+        killist = fs.store_files_in_buckets(fs.files_per_db)
+        for filename in fs.sorted_files:
+            print(filename, filename in killist)
+        # pprint.pprint(killist)
+
+        exit()
+
     if not skip:
         print("Choose a filesystem: LocalFS | B2FS")
         fs = input("")
@@ -37,11 +46,13 @@ if __name__ == '__main__':
         if fs == 'B2FS':
             try:
                 fs = B2FS(bucket_name, key_id, app_id)
-            except Exception:
+            except (ValueError, Exception):
                 fs = B2FS(bucket_name, key_id, app_id, folder)
 
     sorted_files = fs.sorted_files
     kill_list = fs.store_files_in_buckets(fs.files_per_db)
+    for filename in fs.sorted_files:
+        print(filename, filename in kill_list)
     if skip:
         fs.delete_files(kill_list)
     else:
