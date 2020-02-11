@@ -1,21 +1,54 @@
 # Klean
+
 > A database backup cleaner. Sorts files by date and deletes the ones you don't need anymore. 
 
 ![version](https://img.shields.io/github/v/release/kevinkosterr/Klean?include_prereleases)
 
 #### supports:
+
 ![BackBlaze](https://www.backblaze.com/pics/backblaze-logo.gif)
 <br>
 
-## Usage:
+### Usage:
 
-Before using this script please configure it using the provided `config.toml` file. 
+everything is configured in the `config.toml` file. which looks like this by default:
 
-### :file_folder:Local
+```python
+#folder is optional
+folder = ""
+#a key_id is required to run this application, you can obtain one in the B2 portal
+key_id = ""
+#an app_id is required to run this application, you can obtain one in the B2 portal
+#your app_id is only shown once
+app_id = ""
 
-For deleting files locally, the directory must be configured in the `config.toml` file. Please enter the full path , not including the last backslash (if there is one).
 
-### :fire:BackBlaze
+# 0.5 addition to hours_between is for safety purposes, so the script doesn't accidentally delete wrong files.
 
-For directly using the BackBlaze storage and skipping the confirmation, add -y to the command line. Currently the file size isn't being calculated for BackBlaze Cloud Storage. 
+[bucket_first]
+#by default hours_between isn't defined here, because no
+#files should be deleted in the first week
+#hours_between=
+period_in_days= 7
+
+[bucket_second]
+hours_between= 4.5
+period_in_days= 14
+
+[bucket_third]
+hours_between= 12.5
+period_in_days= 28
+
+[bucket_fourth]
+hours_between= 24.5
+period_in_days= 84
+
+[bucket_fifth]
+hours_between= 168.5
+period_in_days= 84
+```
+
+`-y` - passing this into the command line skips any confirmation
+
+`--do-delete` - this arguments is required, else it will not delete files. currently this immediately uses the B2 filesystem
 
