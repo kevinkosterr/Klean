@@ -1,7 +1,4 @@
-files/
 .idea
-filecreate.py
-filelist
 venv
 config.toml
 README.md
