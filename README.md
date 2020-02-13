@@ -17,7 +17,7 @@ After sorting the filenames the filenames will be put inside buckets and the dif
 ### Usage:
 
 ```bash
-run.py {b2,local} [-y] [--do-delete]
+python run.py {b2,local} [-y] [--do-delete]
 ```
 
 `b2` - uses the BackBlaze Cloud Storage(B2FS)
