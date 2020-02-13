@@ -11,11 +11,34 @@
 
 ### Usage:
 
+```python
+run.py {b2,local} [-y] [--do-delete]
+```
+
+`b2` - uses the BackBlaze Cloud Storage(B2FS)
+
+`local` - uses the Local storage(LocalFS)
+
+`-y` - passing this into the command line skips any confirmation
+
+`--do-delete` - this arguments is required, else it will not delete files. currently this immediately uses the B2 filesystem
+
 everything is configured in the `config.toml` file. which looks like this by default:
 
-```python
-#folder is optional
-folder = ""
+```toml
+[main]
+#the prefix used in the filenames
+#this is used to serperate the databasename and the date that's parsed within
+#the filename
+prefix = "+"
+
+[LocalFS]
+# please enter the full path to the directory
+directory = ""
+
+[B2Blaze]
+#bucket is the name of the bucket
+bucket = ""
 #a key_id is required to run this application, you can obtain one in the B2 portal
 key_id = ""
 #an app_id is required to run this application, you can obtain one in the B2 portal
@@ -24,10 +47,10 @@ app_id = ""
 
 
 # 0.5 addition to hours_between is for safety purposes, so the script doesn't accidentally delete wrong files.
-
 [bucket_first]
 #by default hours_between isn't defined here, because no
 #files should be deleted in the first week
+
 #hours_between=
 period_in_days= 7
 
@@ -47,8 +70,4 @@ period_in_days= 84
 hours_between= 168.5
 period_in_days= 84
 ```
-
-`-y` - passing this into the command line skips any confirmation
-
-`--do-delete` - this arguments is required, else it will not delete files. currently this immediately uses the B2 filesystem
 
