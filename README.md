@@ -11,7 +11,7 @@
 
 ### Usage:
 
-```python
+```bash
 run.py {b2,local} [-y] [--do-delete]
 ```
 
