@@ -28,27 +28,27 @@ python run.py {b2,local} [-y] [--do-delete]
 
 `--do-delete` - this arguments is required, else it will not delete files.
 
-everything is configured in the `config.toml` file. which looks like this by default:
+everything needs to be configured in the `config.toml` file. which looks like this by default:
 
 ```toml
 [main]
 #the prefix used in the filenames
 #this is used to serperate the databasename and the date that's parsed within
 #the filename
-prefix = "+"
+prefix = "YOUR_PREFIX"
 
 [LocalFS]
 # please enter the full path to the directory
-directory = ""
+directory = "INSERT_LOCAL_DIRECTORY"
 
 [B2Blaze]
 #bucket is the name of the bucket
-bucket = ""
+bucket = "B2_BUCKET_NAME"
 #a key_id is required to run this application, you can obtain one in the B2 portal
-key_id = ""
+key_id = "YOUR_KEY_NAME"
 #an app_id is required to run this application, you can obtain one in the B2 portal
 #your app_id is only shown once
-app_id = ""
+app_id = "YOUR_APPLICATION_KEY"
 
 
 # 0.5 addition to hours_between is for safety purposes, so the script doesn't accidentally delete wrong files.
