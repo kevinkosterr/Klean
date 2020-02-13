@@ -11,8 +11,6 @@ directory = ""
 [B2Blaze]
 #bucket is the name of the bucket
 bucket = ""
-#folder is optional
-folder = ""
 #a key_id is required to run this application, you can obtain one in the B2 portal
 key_id = ""
 #an app_id is required to run this application, you can obtain one in the B2 portal
