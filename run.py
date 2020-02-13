@@ -11,7 +11,6 @@ if __name__ == '__main__':
     bucket_name = c.get('B2Blaze').get('bucket')
     key_id = c.get('B2Blaze').get('key_id')
     app_id = c.get('B2Blaze').get('app_id')
-    folder = c.get('B2Blaze').get('folder')
     skip = False
 
     # if -y is given as an argument, it skips the confirmation
@@ -36,20 +35,11 @@ if __name__ == '__main__':
             print(filename, filename in killlist)
         exit()
 
-    # if not skip:
-    #     print("Choose a filesystem: LocalFS | B2FS")
-    #     fs = input("")
-    #     if fs == 'LocalFS':
-    #         fs = LocalFS(my_dir)
-    #     if fs == 'B2FS':
-    #         try:
-    #             fs = B2FS(bucket_name, key_id, app_id)
-    #         except (ValueError, Exception):
-    #             fs = B2FS(bucket_name, key_id, app_id, folder)
-
     try:
         sorted_files = fs.sorted_files
         kill_list = fs.store_files_in_buckets(fs.files_per_db)
+    # raises a NameError and prints error
+    # if no filesystem is given
     except NameError:
         print('Filesystem {b2, local} must be passed as the first argument')
         raise
