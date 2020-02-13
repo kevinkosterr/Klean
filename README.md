@@ -5,6 +5,10 @@
 ![version](https://img.shields.io/github/v/release/kevinkosterr/Klean?include_prereleases)
 ![GitHub last commit](https://img.shields.io/github/last-commit/kevinkosterr/Klean)
 
+Klean gets the filenames out of your Local Drive or BackBlaze, sorts them by the date given inside the filename.  Klean works with buckets, each bucket represents a period of days given inside the ` config.toml` file (e.g. bucket1 = 14days, bucket2 = 28 days etc). 
+
+After sorting the filenames the filenames will be put inside buckets and the difference between each backup is calculated. If the difference between each backup reaches the maximum allowed amount (given in `config.toml`), it puts all the filenames between each maximum inside a kill list. Klean will now start getting each filename out of the kill list and deletes the files with the same filename.
+
 #### supports:
 
 ![BackBlaze](https://www.backblaze.com/pics/backblaze-logo.gif)
