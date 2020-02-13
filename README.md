@@ -21,7 +21,7 @@ run.py {b2,local} [-y] [--do-delete]
 
 `-y` - passing this into the command line skips any confirmation
 
-`--do-delete` - this arguments is required, else it will not delete files. currently this immediately uses the B2 filesystem
+`--do-delete` - this arguments is required, else it will not delete files.
 
 everything is configured in the `config.toml` file. which looks like this by default:
 
