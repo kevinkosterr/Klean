@@ -4,6 +4,7 @@
 
 ![version](https://img.shields.io/github/v/release/kevinkosterr/Klean?include_prereleases)
 ![GitHub last commit](https://img.shields.io/github/last-commit/kevinkosterr/Klean)
+![GitHub top language](https://img.shields.io/github/languages/top/kevinkosterr/Klean)
 
 Klean gets the filenames out of your Local Drive or BackBlaze, sorts them by the date given inside the filename.  Klean works with buckets, each bucket represents a period of days given inside the ` config.toml` file (e.g. bucket1 = 14days, bucket2 = 28 days etc). 
 
