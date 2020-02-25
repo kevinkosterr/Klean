@@ -1,4 +1,4 @@
-# <img src='https://image.flaticon.com/icons/svg/660/660478.svg' width="30" height="30"> Klean
+# Klean
 
 > A database backup cleaner. Sorts files by date and deletes the ones you don't need anymore. 
 
