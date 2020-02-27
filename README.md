@@ -27,7 +27,7 @@ python run.py {b2,local} [-y] [--do-delete]
 
 `-y` - passing this into the command line skips any confirmation
 
-`--do-delete` - this arguments is required, else it will not delete files.
+`--do-delete` - this argument is required, else it will not delete files.
 
 everything needs to be configured in the `config.toml` file. which looks like this by default:
 
