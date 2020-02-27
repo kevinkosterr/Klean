@@ -68,5 +68,7 @@ class B2FS(Filesystems.Filesystem.Filesystem):
             if not response.status_code == 200:
                 raise FileNotFoundError('Error during file deletion of {}:{}'.format(filename, response.value))
             obj.deleted = True
+            deleted_files = []
             print(filename, 'deleted')
-        print('All files have been deleted successfully.')
+            deleted_files.append(filename)
+        print(f'{len(deleted_files)}')
