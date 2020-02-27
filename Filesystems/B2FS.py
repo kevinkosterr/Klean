@@ -56,6 +56,7 @@ class B2FS(Filesystems.Filesystem.Filesystem):
 
             :param kill_list: the kill_list extended by store_files_in_buckets()
         """
+        deleted_files = []
         for filename in kill_list:
             # refers to the empty dictionary defined in __init__ of this class
             obj = self.filenames_to_obj_map[filename]
@@ -68,7 +69,6 @@ class B2FS(Filesystems.Filesystem.Filesystem):
             if not response.status_code == 200:
                 raise FileNotFoundError('Error during file deletion of {}:{}'.format(filename, response.value))
             obj.deleted = True
-            deleted_files = []
             print(filename, 'deleted')
             deleted_files.append(filename)
         print(f'{len(deleted_files)}')
