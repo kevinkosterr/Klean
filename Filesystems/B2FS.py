@@ -71,4 +71,4 @@ class B2FS(Filesystems.Filesystem.Filesystem):
             obj.deleted = True
             print(filename, 'deleted')
             deleted_files.append(filename)
-        print(f'{len(deleted_files)}')
+        print(f'{len(deleted_files)} files have been deleted.')
