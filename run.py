@@ -17,10 +17,10 @@ if __name__ == '__main__':
     if '-y' in sys.argv:
         skip = True
     # picks b2fs if b2 is given as an argument
-    if 'b2' in sys.argv[0]:
+    if 'b2' in sys.argv[1]:
         fs = B2FS(bucket_name, key_id, app_id)
     # picks localfs if local is given as an argument
-    if 'local' in sys.argv[0]:
+    if 'local' in sys.argv[1]:
         fs = LocalFS(my_dir)
 
     # if --do-delete is not given, it will only print out which
@@ -28,6 +28,8 @@ if __name__ == '__main__':
     if '--do-delete' not in sys.argv:
         try:
             killlist = fs.store_files_in_buckets(fs.files_per_db)
+        # raises a NameError and prints error
+        # if no filesystem is given
         except NameError:
             print('Filesystem {b2, local} must be passed as the first argument')
             raise
