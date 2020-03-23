@@ -2,7 +2,6 @@
 
 > A database backup cleaner. Sorts files by date and deletes the ones you don't need anymore. 
 
-![version](https://img.shields.io/github/v/release/kevinkosterr/Klean?include_prereleases)
 ![GitHub last commit](https://img.shields.io/github/last-commit/kevinkosterr/Klean)
 ![GitHub top language](https://img.shields.io/github/languages/top/kevinkosterr/Klean)
 
