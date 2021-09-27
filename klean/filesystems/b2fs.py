@@ -1,9 +1,9 @@
-import Filesystems.Filesystem
+import klean.filesystems.filesystem
 import toml
 import b2blaze
 
 
-class B2FS(Filesystems.Filesystem.Filesystem):
+class B2FS(klean.Filesystems.Filesystem.Filesystem):
     def __init__(self, bucket, key_id, app_id, *folder):
         self.b2 = b2blaze.B2(key_id, app_id)
         self.bucket = self.b2.buckets.get(bucket)

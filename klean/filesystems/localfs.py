@@ -1,9 +1,9 @@
-import Filesystems.Filesystem
+import klean.filesystems.filesystem
 import toml
 import os
 
 
-class LocalFS(Filesystems.Filesystem.Filesystem):
+class LocalFS(klean.Filesystems.Filesystem.Filesystem):
     def __init__(self, working_dir):
         self.working_dir = working_dir
         super().__init__()

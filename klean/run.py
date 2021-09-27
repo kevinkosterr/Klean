@@ -1,10 +1,10 @@
 import toml
 import sys
-from Filesystems.LocalFS import LocalFS
-from Filesystems.B2FS import B2FS
+from filesystems.localfs import LocalFS
+from filesystems.b2fs import B2FS
 
 if __name__ == '__main__':
-    c = toml.load('config.toml')
+    c = toml.load('data/config.toml')
     # the following variables can be configured in the config.toml file
     # my_dir, bucket_name, key_id, app_id, folder
     my_dir = c.get('LocalFS').get('directory')
