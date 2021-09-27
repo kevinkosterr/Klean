@@ -4,6 +4,9 @@ from filesystems.localfs import LocalFS
 from filesystems.b2fs import B2FS
 
 if __name__ == '__main__':
+    # TODO: build support for more cloud based services.
+    # TODO: refactor all of the code.
+    # TODO: change the way the CLI is handled in the code.
     c = toml.load('data/config.toml')
     # the following variables can be configured in the config.toml file
     # my_dir, bucket_name, key_id, app_id, folder
