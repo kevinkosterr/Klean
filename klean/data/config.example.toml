@@ -15,7 +15,7 @@ bucket = ""
 key_id = ""
 #an app_id is required to run this application, you can obtain one in the B2 portal
 #your app_id is only shown once
-app_id = ""
+app_key = ""
 
 
 # 0.5 addition to hours_between is for safety purposes, so the script doesn't accidentally delete wrong files.
