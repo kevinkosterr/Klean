@@ -167,8 +167,5 @@ class Filesystem:
     def total_file_size(self):
         raise NotImplementedError()
 
-    def confirm_delete(self, kill_list):
-        raise NotImplementedError()
-
     def delete_files(self, kill_list):
         raise NotImplementedError()
