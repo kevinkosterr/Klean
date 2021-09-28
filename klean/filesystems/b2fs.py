@@ -1,74 +1,56 @@
-import klean.filesystems.filesystem
+from .filesystem import Filesystem
 import toml
-import b2blaze
+from b2sdk.v2 import B2Api, InMemoryAccountInfo
 
 
-class B2FS(klean.Filesystems.Filesystem.Filesystem):
-    def __init__(self, bucket, key_id, app_id, *folder):
-        self.b2 = b2blaze.B2(key_id, app_id)
-        self.bucket = self.b2.buckets.get(bucket)
+class B2FS(Filesystem):
+    def __init__(self, bucket, key_id, app_id):
+        # holds all the account info in memory.
+        info = InMemoryAccountInfo()
+        self.api = B2Api(info)
+
+        # authorize account through BackBlaze B2 API.
+        self.b2 = self.api.authorize_account("production", key_id, app_id)
+        self.bucket = self.api.get_bucket_by_name(bucket)
         self.sorted_files = self.get_sorted_files()
         self.files_per_db = self.get_files_per_db(self.sorted_files)
-        self.folder = folder
         self.filenames_to_obj_map = {}
         super().__init__()
 
     @staticmethod
-    def config(_config_cache={}):
+    def config(_config_cache=None):
+        """ 
+        Caches the configuration for speed optimization 
         """
-        Caches the configuration for speed optimization
-        """
+        if _config_cache is None:
+            _config_cache = {}
         if _config_cache:
             return _config_cache
-        _config_cache.update(toml.load('config.toml'))
+        _config_cache.update(toml.load('data/config.toml'))
         return _config_cache
 
     def get_sorted_files(self):
+        """ 
+        Gets a sorted list of filenames. 
+            :return: a sorted list of filenames 
         """
-        Gets a sorted list of filenames.
-
-            :return: a sorted list of filenames
-        """
-        # putting the filenames as keys into a dictionary
-        # every value of a filename is a B2File object
-        self.filenames_to_obj_map = {_.file_name: _ for _ in self.bucket.files.all()}
+        # putting the filenames as keys into a dictionary 
+        # every value of a filename is a B2File object 
+        self.filenames_to_obj_map = {_[0].file_name: _[0] for _ in self.bucket.ls()}
         filenames = self.filenames_to_obj_map.keys()
         return sorted(filenames, reverse=True)
 
-    def confirm_delete(self, kill_list):
-        """
-        Asks the user for confirmation, if they want to delete the files or not.
-        This can be skipped by passing -y as argument in the command line
-
-            :param kill_list: the kill_list extended by store_files_in_buckets()
-        """
-        # confirming if the file should be deleted
-        # this can be skipped by passing -y into the command line
-        confirm = input("Are you sure you want to delete these files? (y/n) ")
-        if confirm == 'y':
-            self.delete_files(kill_list)
-        if confirm == 'n':
-            exit()
-
     def delete_files(self, kill_list):
-        """
-        Deletes the B2File objects based on the filenames in kill_list
-
-            :param kill_list: the kill_list extended by store_files_in_buckets()
+        """ 
+        Deletes the B2File objects based on the filenames in kill_list 
+            :param kill_list: the kill_list extended by store_files_in_buckets() 
         """
         deleted_files = []
         for filename in kill_list:
-            # refers to the empty dictionary defined in __init__ of this class
+            # refers to the empty dictionary defined in __init__ of this class 
             obj = self.filenames_to_obj_map[filename]
-            path = b2blaze.API.delete_file_version
-            params = {
-                'fileId': obj.file_id,
-                'fileName': obj.file_name
-            }
-            response = obj.connector.make_request(path=path, method='post', params=params)
-            if not response.status_code == 200:
-                raise FileNotFoundError('Error during file deletion of {}:{}'.format(filename, response.value))
-            obj.deleted = True
-            print(filename, 'deleted')
+            self.api.delete_file_version(
+                obj.id_, filename
+            )
             deleted_files.append(filename)
         print(f'{len(deleted_files)} files have been deleted.')
