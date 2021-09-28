@@ -1,9 +1,9 @@
-import klean.filesystems.filesystem
+from .filesystem import Filesystem
 import toml
 import os
 
 
-class LocalFS(klean.Filesystems.Filesystem.Filesystem):
+class LocalFS(Filesystem):
     def __init__(self, working_dir):
         self.working_dir = working_dir
         super().__init__()
@@ -15,7 +15,7 @@ class LocalFS(klean.Filesystems.Filesystem.Filesystem):
         """
         if _config_cache:
             return _config_cache
-        _config_cache.update(toml.load('config.toml'))
+        _config_cache.update(toml.load('data/config.toml'))
         return _config_cache
 
     def get_sorted_files(self):

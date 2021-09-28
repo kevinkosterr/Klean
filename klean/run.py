@@ -13,7 +13,7 @@ if __name__ == '__main__':
     my_dir = c.get('LocalFS').get('directory')
     bucket_name = c.get('B2Blaze').get('bucket')
     key_id = c.get('B2Blaze').get('key_id')
-    app_id = c.get('B2Blaze').get('app_id')
+    app_id = c.get('B2Blaze').get('app_key')
     skip = False
 
     # if -y is given as an argument, it skips the confirmation
