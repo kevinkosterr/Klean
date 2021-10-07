@@ -1,5 +1,5 @@
+import yaml
 from .filesystem import Filesystem
-import toml
 from b2sdk.v2 import B2Api, InMemoryAccountInfo
 
 
@@ -19,38 +19,46 @@ class B2FS(Filesystem):
 
     @staticmethod
     def config(_config_cache=None):
-        """ 
-        Caches the configuration for speed optimization 
+        """
+        Caches the configuration for speed optimization
         """
         if _config_cache is None:
             _config_cache = {}
         if _config_cache:
             return _config_cache
-        _config_cache.update(toml.load('data/config.toml'))
+        with open("data/config.yaml") as c:
+            c = yaml.load(c, Loader=yaml.Loader)
+        _config_cache.update(c)
         return _config_cache
 
     def get_sorted_files(self):
-        """ 
-        Gets a sorted list of filenames. 
-            :return: a sorted list of filenames 
         """
-        # putting the filenames as keys into a dictionary 
-        # every value of a filename is a B2File object 
+        Gets a sorted list of filenames.
+            :return: a sorted list of filenames
+        """
+        # putting the filenames as keys into a dictionary
+        # every value of a filename is a B2File object
         self.filenames_to_obj_map = {_[0].file_name: _[0] for _ in self.bucket.ls()}
         filenames = self.filenames_to_obj_map.keys()
         return sorted(filenames, reverse=True)
 
     def delete_files(self, kill_list):
-        """ 
-        Deletes the B2File objects based on the filenames in kill_list 
-            :param kill_list: the kill_list extended by store_files_in_buckets() 
+        """
+        Deletes the B2File objects based on the filenames in kill_list
+            :param kill_list: the kill_list extended by store_files_in_buckets()
         """
         deleted_files = []
         for filename in kill_list:
-            # refers to the empty dictionary defined in __init__ of this class 
+            # refers to the empty dictionary defined in __init__ of this class
             obj = self.filenames_to_obj_map[filename]
-            self.api.delete_file_version(
-                obj.id_, filename
-            )
+            self.api.delete_file_version(obj.id_, filename)
             deleted_files.append(filename)
-        print(f'{len(deleted_files)} files have been deleted.')
+        print(f"{len(deleted_files)} files have been deleted.")
+
+    def login(self):
+        """Logs the user in to B2Blaze account."""
+        key_id = self.config().get("b2blaze").get("key_id")
+        app_id = self.config().get("b2blaze").get("app_id")
+        return self.api.authorize_account(
+            "production", application_key_id=key_id, application_key=app_id
+        )

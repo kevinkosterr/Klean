@@ -1,5 +1,5 @@
-import toml
 import click
+import yaml
 
 from filesystems.localfs import LocalFS
 from filesystems.b2fs import B2FS
@@ -13,22 +13,25 @@ class KleanError(RuntimeError):
 @click.option('-fs', default='local', help="The filesystem you want to use.")
 @click.option('--do-delete', '-del', is_flag=True, help="If you'd like to actually delete the files or not.")
 def main(fs, do_delete):
-    c = toml.load('data/config.toml')
+    with open("data/config.yaml") as c:
+        c = yaml.load(c, Loader=yaml.Loader)
+
     if fs == "local":
-        my_dir = c.get('LocalFS').get('directory')
+        my_dir = c.get('localfs').get('directory')
         fs = LocalFS(my_dir)
 
     elif fs == "b2":
-        bucket = c.get('B2Blaze').get('bucket')
-        key_id = c.get("B2Blaze").get('key_id')
-        app_key = c.get("B2Blaze").get('app_key')
+        bucket = c.get('b2blaze').get('bucket')
+        key_id = c.get("b2blaze").get('key_id')
+        app_key = c.get("b2blaze").get('app_key')
         fs = B2FS(bucket, key_id, app_key)
 
     else:
         raise KleanError("Filesystem '%s' is invalid." % fs)
 
     if not do_delete:
-        kill_list = fs.store_files_in_buckets(fs.files_per_db)
+        buckets_per_db = fs.buckets_per_db
+        kill_list = fs.kill_list_per_db(buckets_per_db)
         for filename in fs.sorted_files:
             print(filename, filename in kill_list)
         return

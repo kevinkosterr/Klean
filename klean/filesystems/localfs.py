@@ -1,5 +1,5 @@
 from .filesystem import Filesystem
-import toml
+import yaml
 import os
 
 
@@ -9,13 +9,17 @@ class LocalFS(Filesystem):
         super().__init__()
 
     @staticmethod
-    def config(_config_cache={}):
+    def config(_config_cache=None):
         """
         Caches the configuration for speed optimization
         """
+        if _config_cache is None:
+            _config_cache = {}
         if _config_cache:
             return _config_cache
-        _config_cache.update(toml.load('data/config.toml'))
+        with open("data/config.yaml") as c:
+            c = yaml.load(c, Loader=yaml.Loader)
+        _config_cache.update(c)
         return _config_cache
 
     def get_sorted_files(self):
@@ -44,14 +48,17 @@ class LocalFS(Filesystem):
 
     def total_file_size(self):
         """
-        Calculates the total file size of a directory.
+        Calculates the total file size in MB of a directory.
 
             :return: total_size: total file size of the directory given in config.toml
         """
         # sums up all file sizes
         total_size = sum(
-            os.path.getsize(f) for f in os.listdir(self.working_dir) if os.path.isfile(f))
-        return total_size
+            os.path.getsize(f)
+            for f in os.listdir(self.working_dir)
+            if os.path.isfile(f)
+        )
+        return round(float(total_size * 0.000001), 3)
 
     def confirm_delete(self, kill_list):
         """
@@ -64,14 +71,14 @@ class LocalFS(Filesystem):
         # total size of all files in the directory
         total_size = round(float(self.total_file_size() * 0.000001), 3)
         # printing the total file size and total kill list file size
-        print(f'\ntotal file size of files in directory: {total_size} MB')
-        print(f'# kill list file size: {delete_file_size} MB')
+        print(f"\ntotal file size of files in directory: {total_size} MB")
+        print(f"# kill list file size: {delete_file_size} MB")
         # confirming if the files should be deleted
         # this can be skipped by passing -y into the commandline
         confirm = input("\nAre you sure you want to delete these files? (y/n) ")
-        if confirm == 'y':
+        if confirm == "y":
             self.delete_files(kill_list)
-        elif confirm == 'n':
+        elif confirm == "n":
             exit()
         else:
             self.confirm_delete(kill_list)
@@ -88,9 +95,12 @@ class LocalFS(Filesystem):
             if filename in kill_list:
                 try:
                     os.remove(os.path.join(file_dir, filename))
-                    print(filename, 'removed')
+                    print(filename, "removed")
                 # prints ERROR follow by the filename if an OSError occurs
                 except OSError:
-                    print(f'ERROR with {filename}')
+                    print(f"ERROR with {filename}")
                     raise
-        print(f'files have been deleted succesfully')
+        print(f"files have been deleted succesfully")
+
+    def login(self):
+        return None

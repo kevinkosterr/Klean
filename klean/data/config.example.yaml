@@ -1,0 +1,32 @@
+main:
+  datetime_format: ""
+  prefix: "+"
+
+localfs:
+  # please enter the full path to the directory
+  directory: "YOUR_DIRECTORY"
+
+b2blaze:
+  #bucket is the name of the bucket
+  bucket: "YOUR_BUCKET_NAME"
+  #a key_id is required to run this application, you can obtain one in the B2 portal
+  key_id: "YOUR_KEY_ID"
+  #an app_key is required to run this application, you can obtain one in the B2 portal
+  #your app_key is only shown once
+  app_key: "YOUR_APPLICATION_KEY"
+
+buckets:
+  1:
+    period_in_days: 7
+  2:
+    hours_between: 4.5
+    period_in_days: 14
+  3:
+    hours_between: 12.5
+    period_in_days: 28
+  4:
+    hours_between: 24.5
+    period_in_days: 84
+  5:
+    hours_between: 168.5
+    period_in_days: 84
