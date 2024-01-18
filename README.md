@@ -8,9 +8,10 @@ Klean gets the filenames out of your Local Drive or BackBlaze, sorts them by the
 
 After sorting the filenames the filenames will be put inside buckets and the difference between each backup is calculated. If the difference between each backup reaches the maximum allowed amount (given in `config.toml`), it puts all the filenames between each maximum inside a kill list. Klean will now start getting each filename out of the kill list and deletes the files with the same filename.
 
-#### supports:
+#### Supports:
+![BackBlaze Logo](https://github.com/kevinkosterr/Klean/assets/33180770/edf23425-eab4-434d-9352-59d2055b8ec8)
 
-![BackBlaze](https://www.backblaze.com/pics/backblaze-logo.gif)
+
 <br>
 
 ### Usage:
