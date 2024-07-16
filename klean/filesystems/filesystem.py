@@ -22,15 +22,12 @@ class Filesystem:
           :return: file_date: parsed datetime object out of the filename
         """
         try:
-            # splits the filename from the prefix to the datetime string
             prefix = self.config().get('main').get('prefix')
+            # split on prefix and remove file extension from filename
             file_to_parse = str(filename).split(prefix)[1].split(".")[0]
-            # gets the datetime string and converts it to a datetime object
             file_date = datetime.strptime(str(file_to_parse).replace(";", '').replace('%3A', ':'),
                                           "%Y-%m-%d%" "H:%M:%S")
-        # if there is an error with parsing the datetime object out of the
-        # filename, raise the error and show which filename can't be parsed
-        except:
+        except Exception:
             print('error with', filename)
             raise
         return file_date
@@ -128,7 +125,10 @@ class Filesystem:
                     if diff <= timedelta(days=bucket_config.get('period_in_days')):
                         buckets[bucket].append(cursor)
                         break
-                    elif diff >= timedelta(days=self.config().get(last_bucket_name).get('period_in_days')):
+                    elif (
+                            bucket == last_bucket_name and
+                            diff >= timedelta(days=self.config().get(last_bucket_name).get('period_in_days'))
+                    ):
                         buckets[bucket].append(cursor)
                         break
 
@@ -136,9 +136,11 @@ class Filesystem:
                 try:
                     next_bucket_name = bucket_names[idx + 1]
                     database_kill_list.extend(
-                        self.create_kill_list(bucket_filenames[-1],
-                                              buckets[next_bucket_name],
-                                              self.config().get(next_bucket_name).get('hours_between'))
+                        self.create_kill_list(
+                            bucket_filenames[-1],
+                            buckets[next_bucket_name],
+                            self.config().get(next_bucket_name).get('hours_between')
+                                              )
                     )
                 except IndexError:
                     break
