@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from collections import OrderedDict
 
 
 class Filesystem:
@@ -110,55 +111,41 @@ class Filesystem:
             :return: kill_list: list of files to delete
         """
         kill_list = []
-        # Searches for db_names in files_per_db.keys()
         for db_name in files_per_db.keys():
-            # Creating an empty kill_list for every key in the dictionary
-            # used for showing the amount of files per database that will be deleted.
-            this_kill_list = []
-            bucket1 = []
-            bucket2 = []
-            bucket3 = []
-            bucket4 = []
-            bucket5 = []
-            # the first database filename for a database name
+            database_kill_list = []
+
+            # We must keep the order as given by the config.toml, hence we need the OrderedDict here.
+            # This is required mainly for keeping backwards compatibility.
+            buckets = OrderedDict((x, []) for x in self.config().keys() if x.lower().startswith('bucket'))
+            bucket_names = list(buckets.keys())
+            last_bucket_name = bucket_names[-1]
+
             first_element = files_per_db[db_name][0]
             for cursor in files_per_db[db_name]:
                 diff = self.calc_diff_between_dates(first_element, cursor)
-                # period in days is configurable.
-                # if difference is smaller than or the same as period in days in config.toml
-                # append it to the first bucket.
-                if diff <= timedelta(days=self.config().get('bucket_first').get('period_in_days')):
-                    bucket1.append(cursor)
-                # If difference is smaller as the period in days append to the second bucket. etc
-                elif diff <= timedelta(days=self.config().get('bucket_second').get('period_in_days')):
-                    bucket2.append(cursor)
-                elif diff <= timedelta(days=self.config().get('bucket_third').get('period_in_days')):
-                    bucket3.append(cursor)
-                elif diff <= timedelta(days=self.config().get('bucket_fourth').get('period_in_days')):
-                    bucket4.append(cursor)
-                elif diff >= timedelta(days=self.config().get('bucket_fifth').get('period_in_days')):
-                    bucket5.append(cursor)
+                for bucket in bucket_names:
+                    bucket_config = self.config().get(bucket)
+                    if diff <= timedelta(days=bucket_config.get('period_in_days')):
+                        buckets[bucket].append(cursor)
+                        break
+                    elif diff >= timedelta(days=self.config().get(last_bucket_name).get('period_in_days')):
+                        buckets[bucket].append(cursor)
+                        break
 
-            # extends the this_kill_list with items that need to be deleted
-            # for each bucket that gets compared
-            this_kill_list.extend(
-                self.create_kill_list(bucket1[-1], bucket2,
-                                      self.config().get('bucket_second').get('hours_between')))
-            if bucket2:
-                this_kill_list.extend(
-                    self.create_kill_list(bucket2[-1], bucket3,
-                                          self.config().get('bucket_third').get('hours_between')))
-            if bucket3:
-                this_kill_list.extend(
-                    self.create_kill_list(bucket3[-1], bucket4,
-                                          self.config().get('bucket_fourth').get('hours_between')))
-            if bucket4:
-                this_kill_list.extend(
-                    self.create_kill_list(bucket4[-1], bucket5,
-                                          self.config().get('bucket_fifth').get('hours_between')))
-            kill_list.extend(this_kill_list)
+            for idx, (bucket_name, bucket_filenames) in enumerate(buckets.items()):
+                try:
+                    next_bucket_name = bucket_names[idx + 1]
+                    database_kill_list.extend(
+                        self.create_kill_list(bucket_filenames[-1],
+                                              buckets[next_bucket_name],
+                                              self.config().get(next_bucket_name).get('hours_between'))
+                    )
+                except IndexError:
+                    break
 
-            print(db_name, 'files found', len(files_per_db[db_name]), '# kill list:', len(this_kill_list))
+            kill_list.extend(database_kill_list)
+
+            print(db_name, 'files found', len(files_per_db[db_name]), '# kill list:', len(database_kill_list))
         return kill_list
 
     def kill_list_size(self, kill_list):
