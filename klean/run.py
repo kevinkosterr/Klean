@@ -31,6 +31,8 @@ def main(fs, do_delete, verbose):
 
     if not do_delete:
         kill_list = fs.store_files_in_buckets(fs.files_per_db)
+        print('\n run Klean with --do-delete or -del to delete the files, run with --verbose to see all filenames '
+              'and whether they will be deleted.')
         if verbose:
             for filename in fs.sorted_files:
                 print(filename, filename in kill_list)
