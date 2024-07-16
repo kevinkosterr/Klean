@@ -1,6 +1,6 @@
 arrow==0.17.0
 b2sdk==1.14.1
-certifi==2023.7.22
+certifi==2024.7.4
 charset-normalizer==2.0.6
 colorama==0.4.4
 funcsigs==1.0.2
