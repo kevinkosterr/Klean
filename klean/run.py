@@ -43,6 +43,4 @@ def main(fs, do_delete, verbose):
 
 if __name__ == '__main__':
     # TODO: build support for more cloud based services.
-    # TODO: refactor all of the code.
-    # TODO: change the way the CLI is handled in the code.
     main()
