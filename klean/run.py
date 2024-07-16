@@ -13,15 +13,15 @@ class KleanError(RuntimeError):
 @click.option('-fs', default='local', help="The filesystem you want to use.")
 @click.option('--do-delete', '-del', is_flag=True, help="If you'd like to actually delete the files or not.")
 def main(fs, do_delete):
-    c = toml.load('data/config.toml')
+    configuration = toml.load('data/config.toml')
     if fs == "local":
-        my_dir = c.get('LocalFS').get('directory')
+        my_dir = configuration.get('LocalFS').get('directory')
         fs = LocalFS(my_dir)
 
     elif fs == "b2":
-        bucket = c.get('B2Blaze').get('bucket')
-        key_id = c.get("B2Blaze").get('key_id')
-        app_key = c.get("B2Blaze").get('app_key')
+        bucket = configuration.get('B2Blaze').get('bucket')
+        key_id = configuration.get("B2Blaze").get('key_id')
+        app_key = configuration.get("B2Blaze").get('app_key')
         fs = B2FS(bucket, key_id, app_key)
 
     else:
