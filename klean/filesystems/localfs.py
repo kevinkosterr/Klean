@@ -18,6 +18,11 @@ class LocalFS(Filesystem):
         _config_cache.update(toml.load('data/config.toml'))
         return _config_cache
 
+    @staticmethod
+    def convert_to_mb(value):
+        """Convert a given value (in bytes) to megabytes."""
+        return round(float(value * 0.000001), 3)
+
     def get_sorted_files(self):
         """
         Gets a sorted list of filenames
@@ -41,26 +46,20 @@ class LocalFS(Filesystem):
 
             :return: total_size: total file size of the directory given in config.toml
         """
-        # sums up all file sizes
-        total_size = sum(
-            os.path.getsize(f) for f in os.listdir(self.working_dir) if os.path.isfile(f))
-        return total_size
+        return sum(os.path.getsize(f) for f in os.listdir(self.working_dir) if os.path.isfile(f))
 
     def confirm_delete(self, kill_list):
         """
         Asks the user for confirmation whether the files should be deleted or not.
 
-            :param kill_list: the kill_list created in store_files_in_buckets()
+        :param kill_list: the kill_list created in store_files_in_buckets()
         """
-        # the file size of files that will be deleted
-        delete_file_size = round(float(self.kill_list_size(kill_list) * 0.000001), 3)
-        # total size of all files in the directory
-        total_size = round(float(self.total_file_size() * 0.000001), 3)
-        # printing the total file size and total kill list file size
+        delete_file_size = self.convert_to_mb(self.kill_list_size(kill_list))
+        total_size = self.convert_to_mb(self.total_file_size())
+
         print(f'\ntotal file size of files in directory: {total_size} MB')
         print(f'# kill list file size: {delete_file_size} MB')
-        # confirming if the files should be deleted
-        # this can be skipped by passing -y into the commandline
+
         confirm = input("\nAre you sure you want to delete these files? (y/n) ")
         if confirm == 'y':
             self.delete_files(kill_list)
