@@ -1,4 +1,6 @@
-l = [
+import os
+
+file_names = [
     "dumpall+2019-03-10;03%3A00%3A01.352312.gz",
     "dumpall+2019-03-11;03%3A00%3A01.639499.gz",
     "dumpall+2019-03-12;03%3A00%3A01.892849.gz",
@@ -20631,9 +20633,11 @@ l = [
     "subscription+2019-12-06;09%3A20%3A02.139546.gz",
 ]
 
-import os
+for file_name in file_names:
 
-for fname in l:
-    path = os.path.join("files", fname)
-    with open(path, "w+") as f:
-        f.write(fname[0])
+    if not os.path.exists("files"):
+        os.makedirs("files")
+
+    path = os.path.join("files", file_name)
+    with open(path, "w") as f:
+        f.write(file_name[0])
