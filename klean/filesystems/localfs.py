@@ -24,8 +24,6 @@ class LocalFS(Filesystem):
 
             :return: a sorted os.listdir
         """
-        # sorted_files = sorted(os.listdir(config().get('main').get('directory')), reverse=True)
-        # return a reverse sorted file list
         return sorted(os.listdir(self.working_dir), reverse=True)
 
     def kill_list_size(self, kill_list):
@@ -35,12 +33,7 @@ class LocalFS(Filesystem):
             :param kill_list: the kill_list created in store_files_in_buckets()
             :return: kill_list_size: size of all files that will be deleted
         """
-        kill_list_size = 0
-        for filename in kill_list:
-            # get the size for every file in kill_list
-            kill_file_size = os.path.getsize(f"{self.working_dir}\\{filename}")
-            kill_list_size += kill_file_size
-        return kill_list_size
+        return sum([os.path.getsize(os.path.join(self.working_dir, filename)) for filename in kill_list])
 
     def total_file_size(self):
         """
