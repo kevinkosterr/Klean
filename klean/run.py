@@ -15,7 +15,7 @@ class KleanError(RuntimeError):
 @click.option('--do-delete', '-del', is_flag=True, help="If you'd like to actually delete the files or not.")
 @click.option('--verbose', '-v', is_flag=True, help="Verbose mode.")
 def main(fs, do_delete, verbose):
-    configuration = toml.load(os.path.join('data', 'config.toml'))
+    configuration = toml.load('config.toml')
     if fs == "local":
         my_dir = configuration.get('LocalFS').get('directory')
         fs = LocalFS(my_dir)
