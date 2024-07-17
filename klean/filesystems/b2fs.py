@@ -26,7 +26,7 @@ class B2FS(Filesystem):
             _config_cache = {}
         if _config_cache:
             return _config_cache
-        _config_cache.update(toml.load('data/config.toml'))
+        _config_cache.update(toml.load('config.toml'))
         return _config_cache
 
     def get_sorted_files(self):

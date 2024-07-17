@@ -2,6 +2,7 @@ from .filesystem import Filesystem
 import toml
 import os
 
+
 class LocalFS(Filesystem):
     def __init__(self, working_dir):
         self.working_dir = working_dir
@@ -14,7 +15,7 @@ class LocalFS(Filesystem):
         """
         if _config_cache:
             return _config_cache
-        _config_cache.update(toml.load('data/config.toml'))
+        _config_cache.update(toml.load('config.toml'))
         return _config_cache
 
     @staticmethod

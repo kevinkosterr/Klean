@@ -40,8 +40,7 @@ class Filesystem:
             :param filedate2: second datetime object to compare the first to
             :return: diff: the difference between the two datetime objects
         """
-        diff = self.parse_filename_to_date(filedate1) - self.parse_filename_to_date(filedate2)
-        return diff
+        return self.parse_filename_to_date(filedate1) - self.parse_filename_to_date(filedate2)
 
     def get_files_per_db(self, sorted_files):
         """
