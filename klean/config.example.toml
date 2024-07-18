@@ -1,28 +1,35 @@
 [main]
-#the prefix used in the filenames
-#this is used to serperate the databasename and the date that's parsed within
-#the filename
+# prefix used in the filename to separate the file/database name from the actual date string
 prefix = "+"
+# suffix used in the filename to separate the file/database name from the actual date string
+suffix = "."
+# datetime format the date string in the filename has
+datetime_format = "%Y-%m-%d %H:%M:%S"
+# alias for datetime_format
+date_format = ""
+# extra characters to be replaced by a blank string in filename strings
+replace_extra = []
 
 [LocalFS]
-# please enter the full path to the directory
+# please enter the absolute path to the directory
 directory = ""
 
 [B2Blaze]
-#bucket is the name of the bucket
+# name of the bucket in B2
 bucket = ""
-#a key_id is required to run this application, you can obtain one in the B2 portal
+# key_id obtained in the B2 Portal
 key_id = ""
-#an app_id is required to run this application, you can obtain one in the B2 portal
-#your app_id is only shown once
+# an app_id is required to run this application, you can obtain one in the B2 Portal
 app_key = ""
 
 
-# 0.5 addition to hours_between is for safety purposes, so the script doesn't accidentally delete wrong files.
+# FYI:
+# - Don't define `hours_between` if you don't want any files in that bucket to be deleted.
+# - `period_in_days` determines in which timeframe the bucket exists, so 7 is within a week from the first file Klean
+#    comes across.
+# - 0.5 addition to hours_between is for safety purposes, so the script doesn't accidentally delete wrong files.
+#   It is recommended you do this if you decide to change or add any buckets.
 [bucket_first]
-#by default hours_between isn't defined here, because no
-#files should be deleted in the first week
-
 #hours_between=
 period_in_days= 7
 

@@ -1,3 +1,5 @@
+from urllib.parse import unquote
+from pathlib import Path
 from datetime import datetime, timedelta
 from collections import OrderedDict
 
@@ -15,6 +17,31 @@ class Filesystem:
         """
         raise NotImplementedError()
 
+    @staticmethod
+    def replace_multiple(value: str, to_replace: list[str]) -> str:
+        """
+        Replace multiple values in a string with an empty string.
+
+        :param value: value to replace other values in.
+        :param to_replace: list of values to replace.
+        """
+        for item in to_replace:
+            value = value.replace(item, '')
+        return value
+
+    @staticmethod
+    def filename_to_date_string(filename: str, prefix: str, suffix: str) -> str:
+        """
+        Strip a filename from everything excepts its date string.
+
+        :param filename: full name of the file,
+        :param prefix: prefix used to separate the file/database name from the date string
+        :param suffix: suffix used to separate the file/database name from the date string
+        """
+        # if no prefix or suffix is supplied, its assumed that the user will not be needing a prefix/suffix to be able
+        # to perform the parsing to a date.
+        return unquote(Path(filename).stem.split(prefix)[1].split(suffix)[0])
+
     def parse_filename_to_date(self, filename):
         """ Gets the datetime object from a filename
 
@@ -22,15 +49,21 @@ class Filesystem:
           :return: file_date: parsed datetime object out of the filename
         """
         try:
-            prefix = self.config().get('main').get('prefix')
-            # split on prefix and remove file extension from filename
-            file_to_parse = str(filename).split(prefix)[1].split(".")[0]
-            file_date = datetime.strptime(str(file_to_parse).replace(";", '').replace('%3A', ':'),
-                                          "%Y-%m-%d%" "H:%M:%S")
+            main_configuration = self.config().get('main')
+            suffix = main_configuration.get('suffix')
+            prefix = main_configuration.get('prefix')
+
+            date_string_to_parse = self.filename_to_date_string(filename, prefix, suffix)
+
+            if to_replace := main_configuration.get('replace_extra'):
+                date_string_to_parse = self.replace_multiple(date_string_to_parse, to_replace)
+
+            date_format = main_configuration.get('date_format') or main_configuration.get('datetime_format')
+
+            return datetime.strptime(date_string_to_parse, date_format)
         except Exception:
             print('error with', filename)
             raise
-        return file_date
 
     def calc_diff_between_dates(self, filedate1, filedate2):
         """
@@ -139,7 +172,7 @@ class Filesystem:
                             bucket_filenames[-1],
                             buckets[next_bucket_name],
                             self.config().get(next_bucket_name).get('hours_between')
-                                              )
+                        )
                     )
                 except IndexError:
                     break
