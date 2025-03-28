@@ -1,0 +1,3 @@
+
+class KleanError(RuntimeError):
+    pass
