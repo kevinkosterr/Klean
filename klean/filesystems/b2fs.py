@@ -10,7 +10,7 @@ class B2FS(Filesystem):
         self.api = B2Api(info)
 
         # authorize account through BackBlaze B2 API.
-        self.b2 = self.api.authorize_account("production", key_id, app_id)
+        self.b2 = self.api.authorize_account(self.config().get("realm"), key_id, app_id)
         self.bucket = self.api.get_bucket_by_name(bucket)
         self.filenames_to_obj_map = {}
         super().__init__()
