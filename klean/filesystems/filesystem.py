@@ -1,19 +1,37 @@
+import toml
+import os
+
 from urllib.parse import unquote
 from pathlib import Path
 from datetime import datetime, timedelta
 from collections import OrderedDict
+from typing import List, Dict
+
+from klean.exceptions import KleanError
 
 
 class Filesystem:
-    def __init__(self):
-        self.sorted_files = self.get_sorted_files()
-        self.files_per_db = self.get_files_per_db(self.sorted_files)
+    def __init__(self) -> None:
+        self.sorted_files: List[str] = self.get_sorted_files()
+        self.files_per_db: Dict[str, List[str]] = self.get_files_per_db(self.sorted_files)
 
-    def get_sorted_files(self):
+    def config(self, _config_cache=None) -> dict:
+        """
+        Caches the configuration for speed optimization
+        """
+        if _config_cache is None:
+            _config_cache = {}
+        if _config_cache:
+            return _config_cache
+        config_path = os.path.join(os.getcwd(), 'klean', 'config.toml')
+        _config_cache.update(toml.load(config_path))
+        return _config_cache
+
+    def get_sorted_files(self) -> List[str]:
         """
         Gets a sorted list of filenames.
 
-            :return: sorted_files: a sorted list of filenames
+        :return: sorted_files: a sorted list of filenames
         """
         raise NotImplementedError()
 
@@ -42,17 +60,17 @@ class Filesystem:
         # to perform the parsing to a date.
         return unquote(Path(filename).stem.split(prefix)[1].split(suffix)[0])
 
-    def parse_filename_to_date(self, filename):
-        """ Gets the datetime object from a filename
-
-          :param filename: the filename of which you want the date to get parsed from
-          :return: file_date: parsed datetime object out of the filename
+    def parse_filename_to_date(self, filename: str) -> datetime:
         """
-        try:
-            main_configuration = self.config().get('main')
-            suffix = main_configuration.get('suffix')
-            prefix = main_configuration.get('prefix')
+        Gets the datetime object from a filename
 
+        :param filename: the filename of which you want the date to get parsed from
+        :return: file_date: parsed datetime object out of the filename
+        """
+        main_configuration = self.config().get('main')
+        suffix = main_configuration.get('suffix')
+        prefix = main_configuration.get('prefix')
+        try:
             date_string_to_parse = self.filename_to_date_string(filename, prefix, suffix)
 
             if to_replace := main_configuration.get('replace_extra'):
@@ -61,9 +79,8 @@ class Filesystem:
             date_format = main_configuration.get('date_format') or main_configuration.get('datetime_format')
 
             return datetime.strptime(date_string_to_parse, date_format)
-        except Exception:
-            print('error with', filename)
-            raise
+        except Exception as e:
+            raise KleanError(f"Error while parsing filename string to date, with {filename}. Got error: {str(e)}")
 
     def calc_diff_between_dates(self, filedate1, filedate2):
         """
@@ -75,30 +92,28 @@ class Filesystem:
         """
         return self.parse_filename_to_date(filedate1) - self.parse_filename_to_date(filedate2)
 
-    def get_files_per_db(self, sorted_files):
+    def get_files_per_db(self, sorted_files: List[str]) -> Dict[str, List[str]]:
         """
         Gets the filenames per database and puts them into a dictionary
 
             :return: files_per_db: dictionary filled with filenames per database
         """
-        files_per_db = {}
+        files_per_db: Dict[str, List[str]] = {}
         prefix = self.config().get('main').get('prefix')
-        # goes through the sorted files
+
         for filename in sorted_files:
-            # if the given prefix isn't in the filename, continue
+            # ignore all files that don't have the prefix in them
             if prefix not in filename:
                 continue
-            # key_name is the name of the database
-            key_name = filename.split(prefix)[0]
-            # if key doesn't exist yet, creates a key with an empty list
-            if key_name not in files_per_db:
-                files_per_db[key_name] = []
-            # if key already exists, adds the filename as value
-            files_per_db[key_name].append(filename)
+
+            database_name: str = filename.split(prefix)[0]
+            if database_name not in files_per_db:
+                files_per_db[database_name] = []
+            files_per_db[database_name].append(filename)
 
         return files_per_db
 
-    def create_kill_list(self, bucket_start: list, bucket_to_compare: list, hours):
+    def create_kill_list(self, bucket_start: list, bucket_to_compare: list, hours) -> List[str]:
         """
         Creates a kill_list based on the difference between each backup in the buckets
 
@@ -108,7 +123,7 @@ class Filesystem:
              config.toml
             :return: kill_list: a list of files to delete
         """
-        kill_list = []
+        kill_list: List[str] = []
         while len(bucket_to_compare) > 1:
             for item in bucket_to_compare:
                 # calculate the difference between each item in bucket_to_compare
@@ -133,27 +148,28 @@ class Filesystem:
 
         return kill_list
 
-    def store_files_in_buckets(self, files_per_db):
+    def store_files_in_buckets(self, files_per_db: Dict[str, List[str]]) -> List[str]:
         """
         Stores the filenames in buckets.
 
             :return: kill_list: list of files to delete
         """
-        kill_list = []
+        kill_list: List[str] = []
         for db_name in files_per_db.keys():
-            database_kill_list = []
+            database_kill_list: List[str] = []
 
             # We must keep the order as given by the config.toml, hence we need the OrderedDict here.
             # This is required mainly for keeping backwards compatibility.
-            buckets = OrderedDict((x, []) for x in self.config().keys() if x.lower().startswith('bucket'))
-            bucket_names = list(buckets.keys())
-            last_bucket_name = bucket_names[-1]
+            buckets: OrderedDict = OrderedDict((x, []) for x in self.config().keys() if x.lower().startswith('bucket'))
+            bucket_names: List[str] = list(buckets.keys())
+            last_bucket_name: str = bucket_names[-1]
 
-            first_element = files_per_db[db_name][0]
+            first_element: str = files_per_db[db_name][0]
             for cursor in files_per_db[db_name]:
-                diff = self.calc_diff_between_dates(first_element, cursor)
+                diff: timedelta = self.calc_diff_between_dates(first_element, cursor)
                 for bucket in bucket_names:
-                    bucket_config = self.config().get(bucket)
+                    bucket_config: dict = self.config().get(bucket)
+                    # Determine if this file belongs inside the current bucket.
                     if diff <= timedelta(days=bucket_config.get('period_in_days')):
                         buckets[bucket].append(cursor)
                         break
@@ -166,7 +182,7 @@ class Filesystem:
 
             for idx, (bucket_name, bucket_filenames) in enumerate(buckets.items()):
                 try:
-                    next_bucket_name = bucket_names[idx + 1]
+                    next_bucket_name: str = bucket_names[idx + 1]
                     database_kill_list.extend(
                         self.create_kill_list(
                             bucket_filenames[-1],
@@ -182,11 +198,11 @@ class Filesystem:
             print(db_name, 'files found', len(files_per_db[db_name]), '# kill list:', len(database_kill_list))
         return kill_list
 
-    def kill_list_size(self, kill_list):
+    def kill_list_size(self, kill_list: List[str]) -> int:
         raise NotImplementedError()
 
-    def total_file_size(self):
+    def total_file_size(self) -> int:
         raise NotImplementedError()
 
-    def delete_files(self, kill_list):
+    def delete_files(self, kill_list: List[str], verbose: bool = False) -> None:
         raise NotImplementedError()

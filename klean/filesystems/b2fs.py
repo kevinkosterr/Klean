@@ -1,10 +1,10 @@
-from .filesystem import Filesystem
-import toml
+from klean.filesystems.filesystem import Filesystem
 from b2sdk.v2 import B2Api, InMemoryAccountInfo
+from typing import List
 
 
 class B2FS(Filesystem):
-    def __init__(self, bucket, key_id, app_id):
+    def __init__(self, bucket: str, key_id: str, app_id: str) -> None:
         # holds all the account info in memory.
         info = InMemoryAccountInfo()
         self.api = B2Api(info)
@@ -12,27 +12,13 @@ class B2FS(Filesystem):
         # authorize account through BackBlaze B2 API.
         self.b2 = self.api.authorize_account("production", key_id, app_id)
         self.bucket = self.api.get_bucket_by_name(bucket)
-        self.sorted_files = self.get_sorted_files()
-        self.files_per_db = self.get_files_per_db(self.sorted_files)
         self.filenames_to_obj_map = {}
         super().__init__()
 
-    @staticmethod
-    def config(_config_cache=None):
-        """ 
-        Caches the configuration for speed optimization 
-        """
-        if _config_cache is None:
-            _config_cache = {}
-        if _config_cache:
-            return _config_cache
-        _config_cache.update(toml.load('config.toml'))
-        return _config_cache
-
-    def get_sorted_files(self):
+    def get_sorted_files(self) -> List[str]:
         """ 
         Gets a sorted list of filenames. 
-            :return: a sorted list of filenames 
+        :return: a sorted list of filenames
         """
         # putting the filenames as keys into a dictionary 
         # every value of a filename is a B2File object 
@@ -40,10 +26,11 @@ class B2FS(Filesystem):
         filenames = self.filenames_to_obj_map.keys()
         return sorted(filenames, reverse=True)
 
-    def delete_files(self, kill_list):
+    def delete_files(self, kill_list: List[str], verbose: bool = False) -> None:
         """ 
         Deletes the B2File objects based on the filenames in kill_list 
-            :param kill_list: the kill_list extended by store_files_in_buckets() 
+        :param kill_list: the kill_list extended by store_files_in_buckets()
+        :param verbose: toggle verbosity
         """
         deleted_files = []
         for filename in kill_list:

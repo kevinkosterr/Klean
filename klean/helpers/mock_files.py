@@ -1,4 +1,17 @@
-["dumpall+2019-03-10;03%3A00%3A01.352312.gz",
+import os
+
+def generate_mock_files() -> None:
+  directory = os.path.join(os.getcwd(), 'files')
+  if not os.path.exists(directory):
+    os.makedirs(directory)
+
+  for file_name in file_names:
+    path = os.path.join(directory, file_name)
+    with open(path, 'w') as f:
+      f.write(file_name[0])
+
+file_names = [
+  "dumpall+2019-03-10;03%3A00%3A01.352312.gz",
   "dumpall+2019-03-11;03%3A00%3A01.639499.gz",
   "dumpall+2019-03-12;03%3A00%3A01.892849.gz",
   "dumpall+2019-03-13;03%3A00%3A02.094115.gz",
