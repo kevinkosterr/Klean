@@ -11,21 +11,10 @@ from klean.exceptions import KleanError
 
 
 class Filesystem:
-    def __init__(self) -> None:
+    def __init__(self, configuration: dict) -> None:
+        self.config: dict = configuration
         self.sorted_files: List[str] = self.get_sorted_files()
         self.files_per_db: Dict[str, List[str]] = self.get_files_per_db(self.sorted_files)
-
-    def config(self, _config_cache=None) -> dict:
-        """
-        Caches the configuration for speed optimization
-        """
-        if _config_cache is None:
-            _config_cache = {}
-        if _config_cache:
-            return _config_cache
-        config_path = os.path.join(os.getcwd(), 'klean', 'config.toml')
-        _config_cache.update(toml.load(config_path))
-        return _config_cache
 
     def get_sorted_files(self) -> List[str]:
         """
@@ -67,7 +56,7 @@ class Filesystem:
         :param filename: the filename of which you want the date to get parsed from
         :return: file_date: parsed datetime object out of the filename
         """
-        main_configuration = self.config().get('main')
+        main_configuration = self.config.get('main')
         suffix = main_configuration.get('suffix')
         prefix = main_configuration.get('prefix')
         try:
@@ -99,7 +88,7 @@ class Filesystem:
             :return: files_per_db: dictionary filled with filenames per database
         """
         files_per_db: Dict[str, List[str]] = {}
-        prefix = self.config().get('main').get('prefix')
+        prefix = self.config.get('main').get('prefix')
 
         for filename in sorted_files:
             # ignore all files that don't have the prefix in them
@@ -160,7 +149,7 @@ class Filesystem:
 
             # We must keep the order as given by the config.toml, hence we need the OrderedDict here.
             # This is required mainly for keeping backwards compatibility.
-            buckets: OrderedDict = OrderedDict((x, []) for x in self.config().keys() if x.lower().startswith('bucket'))
+            buckets: OrderedDict = OrderedDict((x, []) for x in self.config.keys() if x.lower().startswith('bucket'))
             bucket_names: List[str] = list(buckets.keys())
             last_bucket_name: str = bucket_names[-1]
 
@@ -168,14 +157,14 @@ class Filesystem:
             for cursor in files_per_db[db_name]:
                 diff: timedelta = self.calc_diff_between_dates(first_element, cursor)
                 for bucket in bucket_names:
-                    bucket_config: dict = self.config().get(bucket)
+                    bucket_config: dict = self.config.get(bucket)
                     # Determine if this file belongs inside the current bucket.
                     if diff <= timedelta(days=bucket_config.get('period_in_days')):
                         buckets[bucket].append(cursor)
                         break
                     elif (
                             bucket == last_bucket_name and
-                            diff >= timedelta(days=self.config().get(last_bucket_name).get('period_in_days'))
+                            diff >= timedelta(days=self.config.get(last_bucket_name).get('period_in_days'))
                     ):
                         buckets[bucket].append(cursor)
                         break
@@ -187,7 +176,7 @@ class Filesystem:
                         self.create_kill_list(
                             bucket_filenames[-1],
                             buckets[next_bucket_name],
-                            self.config().get(next_bucket_name).get('hours_between')
+                            self.config.get(next_bucket_name).get('hours_between')
                         )
                     )
                 except IndexError:

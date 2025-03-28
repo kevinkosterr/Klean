@@ -7,9 +7,9 @@ from klean.exceptions import KleanError
 
 
 class LocalFS(Filesystem):
-    def __init__(self, working_dir: str) -> None:
+    def __init__(self, working_dir: str, configuration: dict) -> None:
         self.working_dir: str = working_dir
-        super().__init__()
+        super().__init__(configuration)
 
     @staticmethod
     def convert_to_mb(value: int) -> float:

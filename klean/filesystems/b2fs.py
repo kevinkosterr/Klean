@@ -4,16 +4,16 @@ from typing import List
 
 
 class B2FS(Filesystem):
-    def __init__(self, bucket: str, key_id: str, app_id: str) -> None:
+    def __init__(self, bucket: str, key_id: str, app_id: str, configuration: dict) -> None:
         # holds all the account info in memory.
         info = InMemoryAccountInfo()
         self.api = B2Api(info)
 
         # authorize account through BackBlaze B2 API.
-        self.b2 = self.api.authorize_account(self.config().get("realm"), key_id, app_id)
+        self.b2 = self.api.authorize_account(self.config.get("realm"), key_id, app_id)
         self.bucket = self.api.get_bucket_by_name(bucket)
         self.filenames_to_obj_map = {}
-        super().__init__()
+        super().__init__(configuration)
 
     def get_sorted_files(self) -> List[str]:
         """ 
