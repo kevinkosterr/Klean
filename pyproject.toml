@@ -1,0 +1,21 @@
+[project]
+name = "klean"
+version = "2.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "typer>=0.26.1",
+]
+
+[project.scripts]
+klean = "klean.cli:app"
+
+[project.entry-points."klean.plugins"]
+localfs = "klean.plugins:LocalFileSystem"
+
+[dependency-groups]
+dev = [
+    "black[d]>=26.5.1",
+    "pytest>=9.0.3",
+]
