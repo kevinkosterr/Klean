@@ -1,18 +1,24 @@
 [project]
-name = "klean"
+name = "klean-cli"
 version = "2.0.0"
-description = "Add your description here"
+description = "A database backup cleaner"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "typer>=0.26.1",
 ]
+keywords = ["backup-cleaner", "backups", "klean"]
 
 [project.scripts]
 klean = "klean.cli:app"
 
 [project.entry-points."klean.plugins"]
 localfs = "klean.plugins:LocalFileSystem"
+
+[project.urls]
+Source = "https://github.com/kevinkosterr/Klean"
+Issues = "https://github.com/kevinkosterr/Klean/issues"
+Documentation = "https://github.com/kevinkosterr/Klean#README"
 
 [dependency-groups]
 dev = [
