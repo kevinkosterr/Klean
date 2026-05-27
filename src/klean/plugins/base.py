@@ -84,9 +84,14 @@ class FileSystemPlugin(ABC):
         :return: Dictionary with database names as keys and lists of filenames as values.
         """
         files_per_database = defaultdict(list)
-        prefix = self.config.get("main").get("prefix")
+        prefix = self.config.get("main").get("prefix", None)
 
         for filename in sorted_filenames:
+            # No prefix exists, meaning the folder likely has no separation between databases in the target location.
+            if not prefix:
+                files_per_database["default"].append(filename)
+                continue
+
             # Ignore this file, as it probably does not belong here anyway.
             if prefix not in filename:
                 continue
