@@ -134,6 +134,12 @@ class FileSystemPlugin(ABC):
     def calculate_difference_between_file_dates(
         self, filename_a: str, filename_b: str
     ) -> timedelta:
+        """
+        Calculate the difference between two dates parsed from filenames.
+        :param filename_a: first filename
+        :param filename_b: second filename
+        :return: timedelta representing the difference between the two filenames
+        """
         return self.parse_date_from_filename(
             filename_a
         ) - self.parse_date_from_filename(filename_b)
@@ -141,6 +147,13 @@ class FileSystemPlugin(ABC):
     def __create_bucket_kill_list(
         self, bucket_start: str, bucket_to_compare: List[str], hours_between: int
     ) -> List[str]:
+        """
+        Create a list of filenames that should be deleted for a specific bucket.
+        :param bucket_start: last item of the current bucket
+        :param bucket_to_compare: bucket to compare against
+        :param hours_between: hours between each file
+        :return: list of filenames to delete
+        """
         kill_list: List[str] = []
 
         while len(bucket_to_compare) > 1:
