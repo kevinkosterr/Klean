@@ -15,6 +15,9 @@ dependencies = [
     "typer>=0.26.1",
 ]
 keywords = ["backup-cleaner", "backups", "klean"]
+authors = [
+    { name = "Kevin Koster", email = "koster.k2001@gmail.com"  }
+]
 
 [project.scripts]
 klean = "klean.cli:app"
