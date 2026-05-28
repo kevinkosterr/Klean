@@ -1,0 +1,23 @@
+h4 > span.badge:first-child {
+    margin-left: .5rem;
+}
+
+h4 > span.badge:not(:first-child) {
+    margin-left: .2rem;
+}
+
+span.badge {
+    letter-spacing: 1.4px;
+    padding: .2rem .4rem;
+    border-radius: 4px;
+    font-size: .5rem;
+    border: 1px solid #ccc;
+}
+
+span.badge.required {
+    border: 1px solid #ff6767;
+}
+
+span.badge.info {
+    border: 1px solid #6060ff;
+}

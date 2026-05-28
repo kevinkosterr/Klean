@@ -1,0 +1,9 @@
+.admonition.important {
+    background-color: #ffb222;
+    border-color: #e39e1d;
+    color: #151515;
+}
+
+.admonition.important .admonition-title::before {
+    background-color: #151515;
+}

@@ -1,28 +1,30 @@
+"""
+Contains the local filesystem plugin
+"""
 import os
+from . import FileSystemPlugin
+from typing import List, Optional
 
-from klean.filesystems.filesystem import Filesystem
-from typing import List
+class LocalFileSystem(FileSystemPlugin):
+    name = "local"
+    help = "Local filesystem, like Windows, Linux or MacOS."
 
-from klean.exceptions import KleanError
-
-
-class LocalFS(Filesystem):
-    def __init__(self, working_dir: str, configuration: dict) -> None:
-        self.working_dir: str = working_dir
-        super().__init__(configuration)
+    def __init__(self, config: dict):
+        self.working_dir = config.get("LocalFS").get("directory")
+        super().__init__(config)
 
     @staticmethod
     def convert_to_mb(value: int) -> float:
         """Convert a given value (in bytes) to megabytes."""
         return round(float(value * 0.000001), 3)
 
-    def get_sorted_files(self) -> List[str]:
+    def get_sorted_filenames(self) -> List[str]:
         """
         Gets a sorted list of filenames
         :return: a sorted os.listdir
         """
         try:
-            return sorted(os.listdir(self.working_dir), reverse=True)
+            return sorted([str(_) for _ in os.listdir(self.working_dir)], reverse=True)
         except FileNotFoundError:
             raise FileNotFoundError(f"Can't find directory: '{self.working_dir}', please specify an existing directory "
                                     "in your configuration file")
@@ -44,21 +46,15 @@ class LocalFS(Filesystem):
         """
         return sum(os.path.getsize(f) for f in os.listdir(self.working_dir) if os.path.isfile(f))
 
-    def delete_files(self, kill_list: List[str], verbose: bool = False) -> None:
-        """
-        Deletes the files based on the filenames in kill_list
-
-        :param kill_list: the kill_list extended by store_files_in_buckets()
-        :param verbose:
-        """
+    def delete_files(self, to_delete: List[str], verbose: Optional[bool] = False) -> None:
         deleted_files = []
         for filename in os.listdir(self.working_dir):
-            if filename in kill_list:
+            if filename in to_delete:
                 try:
                     os.remove(os.path.join(self.working_dir, filename))
                     deleted_files.append(filename)
                     if verbose:
                         print(filename, 'removed')
                 except OSError as e:
-                    raise KleanError(f"Couldn't remove file '{filename}' with error: {str(e)}")
+                    raise OSError(f"Couldn't remove file '{filename}' with error: {str(e)}")
         print(f"{len(deleted_files)} files have been deleted successfully")

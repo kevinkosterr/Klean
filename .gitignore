@@ -1,5 +1,7 @@
 .idea
 files
 venv
+dist
+site
 __pycache__
 *.egg-info

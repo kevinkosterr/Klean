@@ -1,0 +1,39 @@
+[build-system]
+requires = ["uv-build>=0.11.0,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "klean"
+
+[project]
+name = "klean-cli"
+version = "2.0.0"
+description = "A database backup cleaner"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "typer>=0.26.1",
+]
+keywords = ["backup-cleaner", "backups", "klean"]
+authors = [
+    { name = "Kevin Koster", email = "koster.k2001@gmail.com"  }
+]
+
+[project.scripts]
+klean = "klean.cli:app"
+
+[project.entry-points."klean.plugins"]
+localfs = "klean.plugins:LocalFileSystem"
+
+[project.urls]
+Source = "https://github.com/kevinkosterr/Klean"
+Issues = "https://github.com/kevinkosterr/Klean/issues"
+Documentation = "https://github.com/kevinkosterr/Klean#README"
+
+[dependency-groups]
+dev = [
+    "black[d]>=26.5.1",
+    "mkdocs-material>=9.7.6",
+    "properdocs>=1.6.7",
+    "pytest>=9.0.3",
+]
