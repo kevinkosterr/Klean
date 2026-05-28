@@ -9,6 +9,7 @@ from klean.plugins import FileSystemPlugin
 
 ## 2. Define a filesystem class
 ```python
+# src/my_filesystem/__init__.py
 class MyFileSystem(FileSystemPlugin):
     name = "foo" # This is the name of the filesystem within the commandline, which will run like `klean foo`
     help = "This is a custom filesystem plugin for Klean."
@@ -18,6 +19,7 @@ class MyFileSystem(FileSystemPlugin):
 Use the plugin configuration to load any required settings, such as a directory path, or API key.
 This uses the standard [`tomllib`](https://docs.python.org/3/library/tomllib.html) (Python 3.11+) library to read configuration values from a TOML file.
 ```python
+# src/my_filesystem/__init__.py
 class MyFileSystem(FileSystemPlugin):
     # ....
 
@@ -30,6 +32,7 @@ class MyFileSystem(FileSystemPlugin):
 ## 4. Implement file listing
 Your filesystem plugin should provide a method that returns a sorted list of filenames.
 ```python
+# src/my_filesystem/__init__.py
 # import ...
 import requests
 
@@ -44,6 +47,7 @@ class MyFileSystem(FileSystemPlugin):
 
 ## 5. Implement file deletion
 ```python
+# src/my_filesystem/__init__.py
 # imports omitted...
 
 class MyFileSystem(FileSystemPlugin):
@@ -57,9 +61,24 @@ class MyFileSystem(FileSystemPlugin):
                 deleted_files.append(filename)
         print(f"{len(deleted_files)} succesfully deleted.")
 ```
-## Full example
+
+## 6. Add an entry point
+In order for Klean to find the plugin after it has been installed, you need to add an entry point to your `setup.py` or 
+`pyproject.toml` within the `klean.plugins` group. With `uv` you can do this like so:
+```toml
+# pyproject.toml
+[project.entry-points."klean.plugins"]
+myfs = "my_filesystem:MyFileSystem"
+```
+
+## 7. Done
+You are now ready to use your custom filesystem plugin with Klean. It should be installed in the same environment as Klean so
+that Klean can find the plugin and use it.
+
+## Full code example
 
 ```python
+# src/my_filesystem/__init__.py
 import requests
 from klean.plugins import FileSystemPlugin
 
@@ -88,6 +107,7 @@ class MyFileSystem(FileSystemPlugin):
                 deleted_files.append(filename)
         print(f"{len(deleted_files)} succesfully deleted.")
 ```
+
 
 
 
