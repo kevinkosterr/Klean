@@ -33,5 +33,7 @@ Documentation = "https://github.com/kevinkosterr/Klean#README"
 [dependency-groups]
 dev = [
     "black[d]>=26.5.1",
+    "mkdocs-material>=9.7.6",
+    "properdocs>=1.6.7",
     "pytest>=9.0.3",
 ]

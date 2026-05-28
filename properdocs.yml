@@ -1,0 +1,22 @@
+site_name: Klean - Documentation
+nav:
+  - Home: index.md
+  - Usage:
+     - Getting started: usage/getting-started.md
+     - Configuration: usage/configuration.md
+  - Development:
+      - Custom filesystem: development/custom-filesystem.md
+  - Official plugins: plugins.md
+repo_url: https://github.com/kevinkosterr/Klean
+repo_name: kevinkosterr/Klean
+theme:
+  name: material
+  palette:
+    scheme: slate
+markdown_extensions:
+  - fenced_code
+  - admonition
+  - toc
+extra_css:
+  - css/badges.css
+  - css/admonitions.css
